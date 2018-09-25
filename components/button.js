@@ -1,35 +1,23 @@
-var EventEmitter = require('events').EventEmitter
-var inherits = require('inherits')
-var css = require('dom-css')
+import React from 'react';
 
-module.exports = Button
-inherits(Button, EventEmitter)
+import { withSettingState } from './context';
 
-function Button (root, opts, theme, uuid) {
-  if (!(this instanceof Button)) return new Button(root, opts, theme, uuid)
+const style = {
+  position: 'absolute',
+  textAlign: 'center',
+  height: 20,
+  width: '62%',
+  border: 'none',
+  cursor: 'pointer',
+  right: 0,
+  fontFamily: 'inherit',
+};
 
-  var container = require('./container')(root, opts.label)
-  require('./label')(container, '', theme)
+// TODO: handle focus style
+// css(input, { outline: 'none' });
 
-  var input = container.appendChild(document.createElement('button'))
-  input.className = 'control-panel-button-' + uuid
-
-  input.onfocus = function () {
-    css(input, {outline: 'none'})
-  }
-
-  input.textContent = opts.label
-
-  css(input, {
-    position: 'absolute',
-    textAlign: 'center',
-    height: '20px',
-    width: '62%',
-    border: 'none',
-    cursor: 'pointer',
-    right: 0,
-    fontFamily: 'inherit'
-  })
-
-  input.addEventListener('click', opts.action)
-}
+export default withSettingState(({ label, action }) => (
+  <button style={style} onClick={action}>
+    {label}
+  </button>
+));
