@@ -1,11 +1,13 @@
 import React from 'react';
 import isstring from 'is-string';
-import uuid from 'uuid/v4';
 import { withState } from 'recompose';
 
 import themes from './themes';
 import Title from './title';
 import ControlPanelContext from './context';
+
+import './components/styles/base.css';
+import './components/styles/color.css';
 
 const ControlPanel = ({
   width = 300,
@@ -17,7 +19,6 @@ const ControlPanel = ({
   setState,
 }) => {
   const theme = isstring(suppliedTheme) ? themes[suppliedTheme] : suppliedTheme;
-  const id = uuid();
 
   const styles = {
     box: {
@@ -36,7 +37,7 @@ const ControlPanel = ({
 
   return (
     <ControlPanelContext.Provider value={{ state, setState, theme }}>
-      <div className="control-panel" id={`control-panel-${id}`} style={styles.box}>
+      <div className="control-panel" style={styles.box}>
         {title ? <Title title={title} /> : null}
         {children}
       </div>

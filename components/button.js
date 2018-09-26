@@ -1,8 +1,10 @@
 import React from 'react';
+import Radium from 'radium';
+import { compose } from 'recompose';
 
 import { withSettingState } from './context';
 
-const style = {
+const getStyle = theme => ({
   position: 'absolute',
   textAlign: 'center',
   height: 20,
@@ -11,13 +13,26 @@ const style = {
   cursor: 'pointer',
   right: 0,
   fontFamily: 'inherit',
-};
+  color: theme.text2,
+  backgroundColor: theme.background2,
+  ':hover': {
+    color: theme.text2,
+    backgroundColor: theme.background2hover,
+  },
+  ':active': {
+    color: theme.background2,
+    backgroundColor: theme.text2,
+  },
+});
 
 // TODO: handle focus style
 // css(input, { outline: 'none' });
 
-export default withSettingState(({ label, action }) => (
-  <button style={style} onClick={action}>
+export default compose(
+  Radium,
+  withSettingState
+)(({ label, action, theme }) => (
+  <button style={getStyle(theme)} onClick={action}>
     {label}
   </button>
 ));

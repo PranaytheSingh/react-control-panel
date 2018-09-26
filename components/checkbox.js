@@ -1,32 +1,56 @@
-var EventEmitter = require('events').EventEmitter
-var inherits = require('inherits')
+import React from 'react';
+import uuid from 'uuid/v4';
 
-module.exports = Checkbox
-inherits(Checkbox, EventEmitter)
+import { withSettingState } from './context';
 
-function Checkbox (root, opts, theme, uuid) {
-  if (!(this instanceof Checkbox)) return new Checkbox(root, opts, theme, uuid)
-  opts = opts || {}
-  var self = this
+const getStyles = (theme, checked) => {
+  const labelCheckedStyle = {
+    width: 10,
+    height: 10,
+    backgroundColor: theme.foreground1,
+    border: `solid 4px ${theme.background2}`,
+    cursor: 'pointer',
+  };
 
-  var container = require('./container')(root, opts.label)
-  require('./label')(container, opts.label, theme)
+  return {
+    checkbox: {
+      display: 'none',
+      cursor: 'pointer',
+    },
+    label: {
+      display: 'inline-block',
+      width: 18,
+      height: 18,
+      padding: 0,
+      verticalAlign: 'middle',
+      marginRight: 8,
+      marginTop: 2,
+      backgroundColor: theme.background2,
+      borderRadius: 0,
+      cursor: 'pointer',
+      ...(checked ? labelCheckedStyle : {}),
+    },
+  };
+};
 
-  var input = container.appendChild(document.createElement('input'))
-  input.id = 'checkbox-' + opts.label + uuid
-  input.type = 'checkbox'
-  input.checked = opts.initial
-  input.className = 'control-panel-checkbox-' + uuid
+const Checkbox = ({ theme, value: checked, onChange }) => {
+  const styles = getStyles(theme, checked);
+  const id = uuid();
 
-  var label = container.appendChild(document.createElement('label'))
-  label.htmlFor = 'checkbox-' + opts.label + uuid
-  label.className = 'control-panel-checkbox-' + uuid
+  return (
+    <React.Fragment>
+      <input
+        id={id}
+        type="checkbox"
+        checked={checked}
+        style={styles.checkbox}
+        onChange={() => onChange(!checked)}
+      />
+      <label htmlFor={id} style={styles.label}>
+        {''}
+      </label>
+    </React.Fragment>
+  );
+};
 
-  setTimeout(function () {
-    self.emit('initialized', input.checked)
-  })
-
-  input.onchange = function (data) {
-    self.emit('input', data.target.checked)
-  }
-}
+export default () => withSettingState(Checkbox);
