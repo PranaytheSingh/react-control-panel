@@ -43,7 +43,6 @@ const ControlPanel = ({
     },
   };
 
-  console.log(children);
   return (
     <ControlPanelContext.Provider value={{ state, setState, theme }}>
       <div className="control-panel" style={styles.box}>

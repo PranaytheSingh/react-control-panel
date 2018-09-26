@@ -7,7 +7,7 @@ const App = () => (
   <ControlPanel theme="dark" title="Example Panel 1">
     <Text label="text" />
     <Button label="button" action={() => alert('clicked')} />
-    <Select options={{ a: '1', b: '2' }} />
+    <Select label="select" options={{ a: '1', b: '2' }} />
   </ControlPanel>
 );
 

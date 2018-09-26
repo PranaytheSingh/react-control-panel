@@ -1,10 +1,48 @@
 import React from 'react';
 
-import Container from './container';
-
 const ControlPanelContext = React.createContext({});
-
 export default ControlPanelContext;
+
+export const withTheme = Comp => ({ ...props }) => (
+  <ControlPanelContext.Consumer>
+    {({ theme }) => <Comp theme={theme} {...props} />}
+  </ControlPanelContext.Consumer>
+);
+
+const Label = withTheme(({ label, theme }) => (
+  <div
+    style={{
+      left: 0,
+      width: '36%',
+      display: 'inline-block',
+      height: '20px',
+      paddingRight: '2%',
+      verticalAlign: 'top',
+    }}
+  >
+    <span
+      style={{
+        color: theme.text1,
+        display: 'inline-block',
+        verticalAlign: 'sub',
+      }}
+    >
+      {label}
+    </span>
+  </div>
+));
+
+export const Container = ({ label, children }) => (
+  <div
+    style={{
+      position: 'relative',
+      minHeight: '25px',
+    }}
+  >
+    {label ? <Label label={label} /> : null}
+    {children}
+  </div>
+);
 
 export const withSettingState = Comp => ({ label, ...props }) => (
   <ControlPanelContext.Consumer>
@@ -18,11 +56,5 @@ export const withSettingState = Comp => ({ label, ...props }) => (
         />
       </Container>
     )}
-  </ControlPanelContext.Consumer>
-);
-
-export const withTheme = Comp => ({ ...props }) => (
-  <ControlPanelContext.Consumer>
-    {({ theme }) => <Comp theme={theme} {...props} />}
   </ControlPanelContext.Consumer>
 );
