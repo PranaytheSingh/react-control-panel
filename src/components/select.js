@@ -60,7 +60,7 @@ const Select = ({ options, theme, value, onChange }) => (
         color: theme.text2,
       }}
     >
-      {...getOptions(options)}
+      {getOptions(options)}
     </select>
   </React.Fragment>
 );

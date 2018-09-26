@@ -1,5 +1,5 @@
 import React from 'react';
-import R from 'ramda';
+import * as R from 'ramda';
 import uuid from 'uuid/v4';
 
 import { withSettingState } from './context';

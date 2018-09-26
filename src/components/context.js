@@ -6,7 +6,7 @@ const ControlPanelContext = React.createContext({});
 
 export default ControlPanelContext;
 
-export const withSettingState = label => Comp => ({ ...props }) => (
+export const withSettingState = Comp => ({ label, ...props }) => (
   <ControlPanelContext.Consumer>
     {({ state, setState, theme }) => (
       <Container label={label}>

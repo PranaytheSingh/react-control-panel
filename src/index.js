@@ -3,8 +3,16 @@ import isstring from 'is-string';
 import { withState } from 'recompose';
 
 import themes from './themes';
-import Title from './title';
-import ControlPanelContext from './context';
+import Title from './components/title';
+import ControlPanelContext from './components/context';
+
+export { default as Button } from './components/button';
+export { default as Checkbox } from './components/checkbox';
+export { default as Multibox } from './components/multibox';
+export { default as Select } from './components/select';
+export { default as Text } from './components/text';
+// TODO: Color
+// TODO: Range
 
 import './components/styles/base.css';
 import './components/styles/color.css';
@@ -35,6 +43,7 @@ const ControlPanel = ({
     },
   };
 
+  console.log(children);
   return (
     <ControlPanelContext.Provider value={{ state, setState, theme }}>
       <div className="control-panel" style={styles.box}>
