@@ -1,56 +1,68 @@
-var EventEmitter = require('events').EventEmitter
-var inherits = require('inherits')
+import React from 'react';
 
-module.exports = Select
-inherits(Select, EventEmitter)
+import { withSettingState } from './context';
 
-function Select (root, opts, theme, uuid) {
-  if (!(this instanceof Select)) return new Select(root, opts, theme, uuid)
-  var self = this
-  var i, container, input, downTriangle, upTriangle, key, option, el, keys
+const getOptions = options => {
+  const keyVals = Array.isArray(options)
+    ? options.map(opt => [opt, opt])
+    : Object.entries((key, val) => [key, val]);
+  return keyVals.map(([key, val]) => (
+    <option key={key} value={key}>
+      {val}
+    </option>
+  ));
+};
 
-  container = require('./container')(root, opts.label)
-  require('./label')(container, opts.label, theme)
+const styles = {
+  triangle: {
+    borderRight: '3px solid transparent',
+    borderLeft: '3px solid transparent',
+    lineHeight: 20,
+    position: 'absolute',
+    right: '2.5%',
+    zIndex: 1,
+  },
+};
 
-  input = document.createElement('select')
-  input.className = 'control-panel-select-' + uuid + '-dropdown'
+const Select = ({ options, theme, value, onChange }) => (
+  <React.Fragment>
+    <span
+      style={{
+        ...styles.triangle,
+        top: 11,
+        borderTop: `5px solid ${theme.text2}`,
+        borderBottom: '0px transparent',
+      }}
+    />
+    <span
+      style={{
+        ...styles.triangle,
+        top: 4,
+        borderBottom: `5px solid ${theme.text2}`,
+        borderTop: '0px transparent',
+      }}
+    />
+    <select
+      value={value}
+      onChange={e => onChange(e.target.value)}
+      style={{
+        display: 'inlineBlock',
+        position: 'absolute',
+        width: '62%',
+        paddingLeft: '1.5%',
+        height: 20,
+        border: 'none',
+        borderRadius: 0,
+        outline: 'none',
+        appearance: 'none',
+        fontFamily: 'inherit',
+        backgroundColor: theme.background2,
+        color: theme.text2,
+      }}
+    >
+      {...getOptions(options)}
+    </select>
+  </React.Fragment>
+);
 
-  downTriangle = document.createElement('span')
-  downTriangle.className = 'control-panel-select-' + uuid + '-triangle control-panel-select-' + uuid + '-triangle--down'
-
-  upTriangle = document.createElement('span')
-  upTriangle.className = 'control-panel-select-' + uuid + '-triangle control-panel-select-' + uuid + '-triangle--up'
-
-  container.appendChild(downTriangle)
-  container.appendChild(upTriangle)
-
-  if (Array.isArray(opts.options)) {
-    for (i = 0; i < opts.options.length; i++) {
-      option = opts.options[i]
-      el = document.createElement('option')
-      el.value = el.textContent = option
-      if (opts.initial === option) {
-        el.selected = 'selected'
-      }
-      input.appendChild(el)
-    }
-  } else {
-    keys = Object.keys(opts.options)
-    for (i = 0; i < keys.length; i++) {
-      key = keys[i]
-      el = document.createElement('option')
-      el.value = key
-      if (opts.initial === key) {
-        el.selected = 'selected'
-      }
-      el.textContent = opts.options[key]
-      input.appendChild(el)
-    }
-  }
-
-  container.appendChild(input)
-
-  input.onchange = function (data) {
-    self.emit('input', data.target.value)
-  }
-}
+export default withSettingState(Select);

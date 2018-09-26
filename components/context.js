@@ -20,3 +20,9 @@ export const withSettingState = label => Comp => ({ ...props }) => (
     )}
   </ControlPanelContext.Consumer>
 );
+
+export const withTheme = Comp => ({ ...props }) => (
+  <ControlPanelContext.Consumer>
+    {({ theme }) => <Comp theme={theme} {...props} />}
+  </ControlPanelContext.Consumer>
+);
