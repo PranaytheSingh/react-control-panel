@@ -53,4 +53,4 @@ const Checkbox = ({ theme, value: checked, onChange }) => {
   );
 };
 
-export default () => withSettingState(Checkbox);
+export default withSettingState(Checkbox);

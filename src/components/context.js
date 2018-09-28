@@ -46,11 +46,11 @@ export const Container = ({ label, children }) => (
 
 export const withSettingState = Comp => ({ label, ...props }) => (
   <ControlPanelContext.Consumer>
-    {({ state, setState, theme }) => (
+    {({ state, setState, theme, indicateChange }) => (
       <Container label={label}>
         <Comp
           value={state[label]}
-          onChange={newVal => setState({ ...state, [label]: newVal })}
+          onChange={newVal => indicateChange(label, newVal)}
           theme={theme}
           {...props}
         />

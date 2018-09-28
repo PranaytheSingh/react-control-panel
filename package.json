@@ -52,7 +52,6 @@
     "babel-eslint": "^9.0.0",
     "babel-loader": "^8.0.2",
     "css-loader": "^1.0.0",
-    "eslint-config-prettier": "^3.1.0",
     "garnish": "^5.0.1",
     "smokestack": "^3.4.1",
     "standard": "^7.1.0",
