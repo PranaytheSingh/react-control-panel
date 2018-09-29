@@ -10,7 +10,7 @@ export { default as Checkbox } from './components/checkbox';
 export { default as Multibox } from './components/multibox';
 export { default as Select } from './components/select';
 export { default as Text } from './components/text';
-// TODO: Color
+export { default as Color } from './components/color';
 // TODO: Range
 // TODO: Interval
 

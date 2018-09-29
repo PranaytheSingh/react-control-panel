@@ -1,85 +1,91 @@
 import React from 'react';
-import ColorPicker from 'react-simple-colorpicker';
-import tinycolor from 'tinycolor2';
+import SimpleColorPicker from 'simple-color-picker';
 
 import { withSettingState } from './context';
 import Value from './value';
 
-function Color(root, opts, theme, uuid) {
-  switch (opts.format) {
-    case 'rgb':
-      initial = tinycolor(initial).toHexString();
-      break;
-    case 'hex':
-      initial = tinycolor(initial).toHexString();
-      break;
-    case 'array':
-      initial = tinycolor.fromRatio({ r: initial[0], g: initial[1], b: initial[2] }).toHexString();
-      break;
-    default:
-      break;
+const colorFormatters = {
+  rgb: colorPicker => {
+    const { r, g, b } = colorPicker.getRGB();
+    return `rgb(${r}, ${g}, ${b})`;
+  },
+  hex: colorPicker => colorPicker.getHexString(),
+  array: colorPicker => {
+    const { r, g, b } = colorPicker.getRGB();
+    return [r, g, b].map(x => (x / 255).toFixed(2));
+  },
+};
+
+class Color extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.colorpickerContainer = React.createRef();
+    this.state = { colorHovered: false, pickerHovered: false };
   }
 
-  css(picker.$el, {
-    marginTop: '20px',
-    display: 'none',
-    position: 'absolute',
-  });
+  formatColor(color) {
+    return colorFormatters[this.props.format](this.picker);
+  }
 
-  css(icon, {
-    position: 'relative',
-    display: 'inline-block',
-    width: '12.5%',
-    height: '20px',
-    backgroundColor: picker.getHexString(),
-  });
+  componentDidMount() {
+    this.picker = new SimpleColorPicker({
+      el: this.colorpickerContainer.current,
+      color: this.props.value,
+      background: this.props.theme.background1,
+      width: 125,
+      height: 100,
+    });
 
-  icon.onmouseout = function(e) {
-    picker.$el.style.display = 'none';
-  };
+    this.picker.onChange(newColor => {
+      const formattedNewColor = this.formatColor(newColor);
+      if (formattedNewColor != this.props.value) {
+        this.props.onChange(formattedNewColor);
+      }
+    });
+  }
 
-  setTimeout(function() {
-    self.emit('initialized', initial);
-  });
+  render() {
+    const { theme, value } = this.props;
 
-  picker.onChange(function(hex) {
-    value.innerHTML = format(hex);
-    css(icon, { backgroundColor: hex });
-    self.emit('input', format(hex));
-  });
-
-  function format(hex) {
-    switch (opts.format) {
-      case 'rgb':
-        return tinycolor(hex).toRgbString();
-      case 'hex':
-        return tinycolor(hex).toHexString();
-      case 'array':
-        var rgb = tinycolor(hex).toRgb();
-        return [rgb.r / 255, rgb.g / 255, rgb.b / 255].map(function(x) {
-          return x.toFixed(2);
-        });
-      default:
-        return hex;
+    if (this.picker) {
+      this.picker.setColor(value);
     }
+
+    return (
+      <React.Fragment>
+        <span
+          style={{
+            position: 'relative',
+            display: 'inline-block',
+            width: '12.5%',
+            height: 20,
+            backgroundColor: value,
+          }}
+          onMouseEnter={() => this.setState({ colorHovered: true })}
+          onMouseLeave={() => this.setState({ colorHovered: false })}
+        />
+        <div
+          ref={this.colorpickerContainer}
+          style={{
+            position: 'absolute',
+            top: '20%',
+            paddingTop: 20,
+            left: '38%',
+            bottom: '20%',
+            right: '10%',
+            height: 100,
+            width: 100,
+            zIndex: 8,
+            display: this.state.colorHovered || this.state.pickerHovered ? undefined : 'none',
+          }}
+          onMouseEnter={() => this.setState({ pickerHovered: true })}
+          onMouseLeave={() => this.setState({ pickerHovered: false })}
+        />
+        <Value text={value} width="46%" />
+      </React.Fragment>
+    );
   }
 }
-
-const Color = ({ theme, format = 'rgb', value = '#123456', onChange }) => {
-  const picker = (picker = new ColorPicker({
-    el: icon,
-    color: initial,
-    background: theme.background1,
-    width: 125,
-    height: 100,
-  }));
-
-  return (
-    <React.Fragment>
-      <span onMouseOver={() => (picker.$el.style.display = '')}>TODO</span>
-      <Value text="" theme={theme} left="46%" />
-    </React.Fragment>
-  );
-};
 
 export default withSettingState(Color);

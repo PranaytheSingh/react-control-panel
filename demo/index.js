@@ -1,11 +1,13 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import ControlPanel, { Text, Button, Select, Checkbox, Multibox } from '../src/index';
+import ControlPanel, { Text, Button, Select, Checkbox, Multibox, Color } from '../src/index';
 
 const initialState = {
   text: 'my setting',
   checkbox: true,
+  'color hex': '#123456',
+  'color rgb': 'rgb(156, 44, 92)',
   selection: 'option 1',
   'multiple checkboxes': [true, true],
 };
@@ -36,6 +38,8 @@ class App extends React.Component {
         >
           <Text label="text" />
           <Checkbox label="checkbox" />
+          <Color label="color hex" format="hex" />
+          <Color label="color rgb" format="rgb" />
           <Button label="gimme an alert" action={() => alert('clicked')} />
           <Select label="selection" options={{ 'option 1': 1, 'option 2': 2 }} />
           <Multibox

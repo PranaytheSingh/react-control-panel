@@ -1,6 +1,8 @@
 import React from 'react';
 
-export default ({ theme, text, width, left }) => (
+import { withTheme } from './context';
+
+export default withTheme(({ theme, text, width, left }) => (
   <div
     style={{
       position: 'absolute',
@@ -17,10 +19,10 @@ export default ({ theme, text, width, left }) => (
       style={{
         color: theme.text2,
         display: 'inline-block',
-        userSelect: 'text',
+        MozUserSelect: 'text',
         cursor: 'text',
         overflow: 'hidden',
-        lineHeight: 20,
+        lineHeight: '20px',
         wordBreak: 'break-all',
         height: 20,
       }}
@@ -28,4 +30,4 @@ export default ({ theme, text, width, left }) => (
       {text}
     </span>
   </div>
-);
+));

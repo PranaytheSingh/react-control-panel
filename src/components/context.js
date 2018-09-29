@@ -33,12 +33,7 @@ const Label = withTheme(({ label, theme }) => (
 ));
 
 export const Container = ({ label, children }) => (
-  <div
-    style={{
-      position: 'relative',
-      minHeight: 25,
-    }}
-  >
+  <div className="container">
     {label ? <Label label={label} /> : null}
     {children}
   </div>
