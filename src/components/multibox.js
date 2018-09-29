@@ -1,5 +1,4 @@
 import React from 'react';
-import * as R from 'ramda';
 
 import { withSettingState } from './context';
 
@@ -38,7 +37,11 @@ const Multibox = ({ theme, colors = [], names = [], value = [], onChange }) => (
                   }
                 : {}),
             }}
-            onClick={() => onChange(R.set(R.lensIndex(i), !checked, value))}
+            onClick={() => {
+              // dirty mutation below
+              value[i] = !checked;
+              onChange(value);
+            }}
           />
           <input
             type="checkbox"

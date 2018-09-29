@@ -11,7 +11,7 @@ export { default as Multibox } from './components/multibox';
 export { default as Select } from './components/select';
 export { default as Text } from './components/text';
 export { default as Color } from './components/color';
-// TODO: Range
+export { default as Range } from './components/range';
 // TODO: Interval
 
 import './components/styles/base.css';

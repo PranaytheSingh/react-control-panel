@@ -34,8 +34,8 @@
     "is-numeric": "0.0.5",
     "is-string": "^1.0.4",
     "prop-types": "^15.6.2",
-    "ramda": "^0.25.0",
     "react": "^16.5.2",
+    "react-css-component": "^1.0.2",
     "react-dom": "^16.5.2",
     "simple-color-picker": "^0.1.2",
     "uuid": "^3.3.2"

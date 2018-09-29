@@ -46,10 +46,8 @@ class Color extends React.Component {
   }
 
   render() {
-    const { theme, value } = this.props;
-
     if (this.picker) {
-      this.picker.setColor(value);
+      this.picker.setColor(this.props.value);
     }
 
     return (
@@ -60,7 +58,7 @@ class Color extends React.Component {
             display: 'inline-block',
             width: '12.5%',
             height: 20,
-            backgroundColor: value,
+            backgroundColor: this.props.value,
           }}
           onMouseEnter={() => this.setState({ colorHovered: true })}
           onMouseLeave={() => this.setState({ colorHovered: false })}
@@ -82,7 +80,7 @@ class Color extends React.Component {
           onMouseEnter={() => this.setState({ pickerHovered: true })}
           onMouseLeave={() => this.setState({ pickerHovered: false })}
         />
-        <Value text={value} width="46%" />
+        <Value text={this.props.value} width="46%" />
       </React.Fragment>
     );
   }

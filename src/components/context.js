@@ -34,7 +34,7 @@ const Label = withTheme(({ label, theme }) => (
 
 export const Container = ({ label, children }) => (
   <div className="container">
-    {label ? <Label label={label} /> : null}
+    <Label label={label || ''} />
     {children}
   </div>
 );

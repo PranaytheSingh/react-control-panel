@@ -1,112 +1,111 @@
-var EventEmitter = require('events').EventEmitter
-var inherits = require('inherits')
-var isnumeric = require('is-numeric')
-var css = require('dom-css')
+import React from 'react';
+import { ClientStyle as Style } from 'react-css-component';
+import isnumeric from 'is-numeric';
+import uuid from 'uuid/v4';
 
-module.exports = Range
-inherits(Range, EventEmitter)
+import { withSettingState } from './context';
+import Value from './value';
+import getDynamicCss from './styles/range';
 
-function Range (root, opts, theme, uuid) {
-  if (!(this instanceof Range)) return new Range(root, opts, theme, uuid)
-  var self = this
-  var scaleValue, scaleValueInverse, logmin, logmax, logsign
+const ErrMsg = ({ msg }) => <span style={{ color: 'red' }}>{msg}</span>;
 
-  var container = require('./container')(root, opts.label)
-  require('./label')(container, opts.label, theme)
+const numericOrDefault = (val, defaultVal) => (isnumeric(val) ? val : defaultVal);
+// lazy version
+const numericOrDefaultElse = (val, getDefaultVal) => (isnumeric(val) ? val : getDefaultVal());
 
-  if (!!opts.step && !!opts.steps) {
-    throw new Error('Cannot specify both step and steps. Got step = ' + opts.step + ', steps = ', opts.steps)
+const getLogDisplayParams = ({ min, max, step, value }) => {
+  if (min * max <= 0) {
+    return (
+      <ErrMsg
+        msg={`Log range min/max must have the same sign and not equal zero. Got min = ${min}, max = ${max}`}
+      />
+    );
+  } else if (isnumeric(step)) {
+    return (
+      <ErrMsg
+        msg={`Log may only use steps (integer number of steps), not a step value. Got step = ${step}`}
+      />
+    );
   }
 
-  var input = container.appendChild(document.createElement('input'))
-  input.type = 'range'
-  input.className = 'control-panel-range-' + uuid
+  const logsign = min > 0 ? 1 : -1;
+  const logmin = Math.abs(min);
+  const logmax = Math.abs(min);
 
-  // Create scale functions for converting to/from the desired scale:
-  if (opts.scale === 'log') {
-    scaleValue = function (x) {
-      return logsign * Math.exp(Math.log(logmin) + (Math.log(logmax) - Math.log(logmin)) * x / 100)
-    }
-    scaleValueInverse = function (y) {
-      return (Math.log(y * logsign) - Math.log(logmin)) * 100 / (Math.log(logmax) - Math.log(logmin))
-    }
-  } else {
-    scaleValue = scaleValueInverse = function (x) { return x }
+  const scaleValue = x =>
+    logsign * Math.exp(Math.log(logmin) + ((Math.log(logmax) - Math.log(logmin)) * x) / 100);
+  const scaleValueInverse = y =>
+    ((Math.log(y * logsign) - Math.log(logmin)) * 100) / (Math.log(logmax) - Math.log(logmin));
+
+  const newValue = scaleValueInverse(
+    numericOrDefaultElse(value, () => scaleValue((min + max) / 2))
+  );
+  if (newValue * scaleValueInverse(max) <= 0) {
+    return (
+      <ErrMsg
+        msg={`Log range initial value must have the same sign as min/max and must not equal zero. Got initial value = ${initial}`}
+      />
+    );
   }
 
-  // Get initial value:
-  if (opts.scale === 'log') {
-    // Get options or set defaults:
-    opts.max = (isnumeric(opts.max)) ? opts.max : 100
-    opts.min = (isnumeric(opts.min)) ? opts.min : 0.1
+  return { min: 0, max: 100, step: 1, value: newValue, scaleValue };
+};
 
-    // Check if all signs are valid:
-    if (opts.min * opts.max <= 0) {
-      throw new Error('Log range min/max must have the same sign and not equal zero. Got min = ' + opts.min + ', max = ' + opts.max)
-    } else {
-      // Pull these into separate variables so that opts can define the *slider* mapping
-      logmin = opts.min
-      logmax = opts.max
-      logsign = opts.min > 0 ? 1 : -1
+const getNormalDisplayParams = ({ min, max, step, value }) => {
+  const newMin = numericOrDefault(min, 0);
+  const newMax = numericOrDefault(max, 100);
 
-      // Got the sign so force these positive:
-      logmin = Math.abs(logmin)
-      logmax = Math.abs(logmax)
+  return {
+    min: newMin,
+    max: newMax,
+    step: numericOrDefault(step, (max - min) / 100),
+    value: numericOrDefault(value, (newMin + newMax) / 2),
+    scaleValue: x => x,
+  };
+};
 
-      // These are now simply 0-100 to which we map the log range:
-      opts.min = 0
-      opts.max = 100
-
-      // Step is invalid for a log range:
-      if (isnumeric(opts.step)) {
-        throw new Error('Log may only use steps (integer number of steps), not a step value. Got step =' + opts.step)
-      }
-      // Default step is simply 1 in linear slider space:
-      opts.step = 1
-    }
-
-    opts.initial = scaleValueInverse(isnumeric(opts.initial) ? opts.initial : scaleValue((opts.min + opts.max) * 0.5))
-
-    if (opts.initial * scaleValueInverse(opts.max) <= 0) {
-      throw new Error('Log range initial value must have the same sign as min/max and must not equal zero. Got initial value = ' + opts.initial)
-    }
-  } else {
-    // If linear, this is much simpler:
-    opts.max = (isnumeric(opts.max)) ? opts.max : 100
-    opts.min = (isnumeric(opts.min)) ? opts.min : 0
-    opts.step = (isnumeric(opts.step)) ? opts.step : (opts.max - opts.min) / 100
-
-    opts.initial = isnumeric(opts.initial) ? opts.initial : (opts.min + opts.max) * 0.5
+class Range extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { id: uuid() };
   }
 
-  // If we got a number of steps, use that instead:
-  if (isnumeric(opts.steps)) {
-    opts.step = isnumeric(opts.steps) ? (opts.max - opts.min) / opts.steps : opts.step
-  }
+  render() {
+    const { scale, steps, onChange, theme, ...props } = this.props;
 
-  // Quantize the initial value to the requested step:
-  var initialStep = Math.round((opts.initial - opts.min) / opts.step)
-  opts.initial = opts.min + opts.step * initialStep
+    if (!!props.step && !!steps) {
+      return (
+        <ErrMsg
+          msg={`Cannot specify both step and steps. Got step = ${props.step}, steps = ${
+            props.steps
+          }`}
+        />
+      );
+    }
 
-  // Set value on the input itself:
-  input.min = opts.min
-  input.max = opts.max
-  input.step = opts.step
-  input.value = opts.initial
+    const { min, max, step, value, scaleValue } = (scale === 'log'
+      ? getLogDisplayParams
+      : getNormalDisplayParams)(props);
+    // use `steps` if provided
+    const processedStep = isnumeric(steps) ? (max - min) / steps : step;
+    const processedVal = scaleValue(min + step * Math.round((value - min) / step));
 
-  css(input, {
-    width: '47.5%'
-  })
-
-  var value = require('./value')(container, scaleValue(opts.initial), theme, '11%')
-
-  setTimeout(function () {
-    self.emit('initialized', parseFloat(input.value))
-  })
-
-  input.oninput = function (data) {
-    var scaledValue = scaleValue(parseFloat(data.target.value))
-    value.innerHTML = scaledValue
-    self.emit('input', scaledValue)
+    return (
+      <React.Fragment>
+        <Style css={getDynamicCss(theme, this.state.id)} />
+        <input
+          className={`control-panel-range-${this.state.id}`}
+          type="range"
+          value={processedVal}
+          min={min}
+          max={max}
+          step={processedStep}
+          onChange={e => onChange(scaleValue(parseFloat(e.target.value)))}
+        />
+        <Value text={processedVal} width="11%" />
+      </React.Fragment>
+    );
   }
 }
+
+export default withSettingState(Range);
