@@ -3,10 +3,8 @@ import React from 'react';
 import { withSettingState } from './context';
 
 const getOptions = options => {
-  const keyVals = Array.isArray(options)
-    ? options.map(opt => [opt, opt])
-    : Object.entries((key, val) => [key, val]);
-  return keyVals.map(([key, val]) => (
+  const keyVals = Array.isArray(options) ? options.map(opt => [opt, opt]) : Object.entries(options);
+  return keyVals.map(([val, key]) => (
     <option key={key} value={key}>
       {val}
     </option>

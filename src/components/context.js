@@ -15,7 +15,7 @@ const Label = withTheme(({ label, theme }) => (
       left: 0,
       width: '36%',
       display: 'inline-block',
-      height: '20px',
+      height: 20,
       paddingRight: '2%',
       verticalAlign: 'top',
     }}
@@ -36,7 +36,7 @@ export const Container = ({ label, children }) => (
   <div
     style={{
       position: 'relative',
-      minHeight: '25px',
+      minHeight: 25,
     }}
   >
     {label ? <Label label={label} /> : null}

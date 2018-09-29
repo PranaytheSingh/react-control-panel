@@ -9,7 +9,7 @@ const Multibox = ({ theme, colors = [], names = [], value = [], onChange }) => (
       position: 'relative',
       width: '60%',
       display: 'inline-block',
-      paddingBottom: '7px',
+      paddingBottom: 7,
     }}
   >
     <span style={{ display: 'inline-block' }}>
@@ -52,10 +52,10 @@ const Multibox = ({ theme, colors = [], names = [], value = [], onChange }) => (
             <span
               style={{
                 backgroundColor: theme.background2,
-                paddingRight: '7px',
+                paddingRight: 7,
                 verticalAlign: 'middle',
-                padding: '2px',
-                marginRight: '8px',
+                padding: 2,
+                marginRight: 8,
                 color: theme.text2,
               }}
             >

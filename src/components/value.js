@@ -6,7 +6,7 @@ export default ({ theme, text, width, left }) => (
       position: 'absolute',
       backgroundColor: theme.background2,
       paddingLeft: '1.5%',
-      height: '20px',
+      height: 20,
       width: width,
       display: 'inline-block',
       overflow: 'hidden',
@@ -20,7 +20,7 @@ export default ({ theme, text, width, left }) => (
         userSelect: 'text',
         cursor: 'text',
         overflow: 'hidden',
-        lineHeight: '20px',
+        lineHeight: 20,
         wordBreak: 'break-all',
         height: 20,
       }}

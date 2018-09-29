@@ -8,8 +8,8 @@ export default withTheme(({ title, theme }) => (
       textAlign: 'center',
       color: theme.text2,
       textTransform: 'uppercase',
-      height: '20px',
-      marginBottom: '4px',
+      height: 20,
+      marginBottom: 4,
     }}
   >
     {title}

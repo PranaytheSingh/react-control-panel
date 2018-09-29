@@ -31,12 +31,14 @@ class ControlPanel extends React.Component {
       title,
       onChange,
       children,
+      style = {},
     } = this.props;
 
     const theme = isstring(suppliedTheme) ? themes[suppliedTheme] : suppliedTheme;
 
     const styles = {
       box: {
+        display: 'inline-block',
         background: theme.background1,
         width,
         padding: 14,
@@ -62,7 +64,7 @@ class ControlPanel extends React.Component {
           },
         }}
       >
-        <div className="control-panel" style={styles.box}>
+        <div className="control-panel" style={{ ...styles.box, ...style }}>
           {title ? <Title title={title} /> : null}
           {children}
         </div>
