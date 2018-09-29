@@ -8,8 +8,8 @@ const initialState = {
   'stepped slider': 0.6,
   text: 'my setting',
   checkbox: true,
-  'color hex': '#123456',
-  'color rgb': 'rgb(156, 44, 92)',
+  'color rgb': 'rgb(100, 200, 100',
+  'color hex': '#30b2ba',
   selection: 'option 1',
   'multiple checkboxes': [true, true],
 };
@@ -26,8 +26,8 @@ const DemoPanel = ({ theme, ...props }) => (
     <Range label="stepped slider" min={0} max={1} step={0.2} />
     <Text label="text" />
     <Checkbox label="checkbox" />
-    <Color label="color hex" format="hex" />
     <Color label="color rgb" format="rgb" />
+    <Color label="color hex" format="hex" />
     <Button label="gimme an alert" action={() => alert('clicked')} />
     <Select label="selection" options={{ 'option 1': 1, 'option 2': 2 }} />
     <Multibox

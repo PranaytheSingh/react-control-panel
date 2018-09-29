@@ -45,11 +45,13 @@ class Color extends React.Component {
     });
   }
 
-  render() {
+  componentDidUpdate() {
     if (this.picker) {
       this.picker.setColor(this.props.value);
     }
+  }
 
+  render() {
     return (
       <React.Fragment>
         <span

@@ -43,7 +43,7 @@ const getLogDisplayParams = ({ min, max, step, value }) => {
   if (newValue * scaleValueInverse(max) <= 0) {
     return (
       <ErrMsg
-        msg={`Log range initial value must have the same sign as min/max and must not equal zero. Got initial value = ${initial}`}
+        msg={`Log range initial value must have the same sign as min/max and must not equal zero. Got initial value = ${newValue}`}
       />
     );
   }
