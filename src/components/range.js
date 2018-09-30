@@ -6,63 +6,32 @@ import uuid from 'uuid/v4';
 import { withSettingState } from './context';
 import Value from './value';
 import getDynamicCss from './styles/range';
+import { withErrorHandler, throwLogRangeError, validateStepParams } from '../error';
+import {
+  withScalerFunctions,
+  numericOrDefault,
+  numericOrDefaultElse,
+  createNormalDisplayOptsGetter,
+} from '../util';
 
-const ErrMsg = ({ msg }) => <span style={{ color: 'red' }}>{msg}</span>;
-
-const numericOrDefault = (val, defaultVal) => (isnumeric(val) ? val : defaultVal);
-// lazy version
-const numericOrDefaultElse = (val, getDefaultVal) => (isnumeric(val) ? val : getDefaultVal());
-
-const getLogDisplayParams = ({ min, max, step, value }) => {
-  if (min * max <= 0) {
-    return (
-      <ErrMsg
-        msg={`Log range min/max must have the same sign and not equal zero. Got min = ${min}, max = ${max}`}
-      />
+const getLogDisplayOpts = withScalerFunctions(
+  ({ min, max, step, value, scaleValue, scaleValueInverse }) => {
+    // `value` is the logarithmic value that the user cares about.  We convert it into a value
+    // from 1 to 100 in order to pass it to the slider.
+    const sliderVal = scaleValueInverse(
+      numericOrDefaultElse(value, () => scaleValue((min + max) / 2))
     );
-  } else if (isnumeric(step)) {
-    return (
-      <ErrMsg
-        msg={`Log may only use steps (integer number of steps), not a step value. Got step = ${step}`}
-      />
-    );
+    if (sliderVal * scaleValueInverse(max) < 0) {
+      throwLogRangeError(sliderVal);
+    }
+
+    return { min: 0, max: 100, step: 1, logVal: value, sliderVal, scaleValue };
   }
+);
 
-  const logsign = min > 0 ? 1 : -1;
-  const logmin = Math.abs(min);
-  const logmax = Math.abs(min);
-
-  const scaleValue = x =>
-    logsign * Math.exp(Math.log(logmin) + ((Math.log(logmax) - Math.log(logmin)) * x) / 100);
-  const scaleValueInverse = y =>
-    ((Math.log(y * logsign) - Math.log(logmin)) * 100) / (Math.log(logmax) - Math.log(logmin));
-
-  const newValue = scaleValueInverse(
-    numericOrDefaultElse(value, () => scaleValue((min + max) / 2))
-  );
-  if (newValue * scaleValueInverse(max) <= 0) {
-    return (
-      <ErrMsg
-        msg={`Log range initial value must have the same sign as min/max and must not equal zero. Got initial value = ${newValue}`}
-      />
-    );
-  }
-
-  return { min: 0, max: 100, step: 1, value: newValue, scaleValue };
-};
-
-const getNormalDisplayParams = ({ min, max, step, value }) => {
-  const newMin = numericOrDefault(min, 0);
-  const newMax = numericOrDefault(max, 100);
-
-  return {
-    min: newMin,
-    max: newMax,
-    step: numericOrDefault(step, (max - min) / 100),
-    value: numericOrDefault(value, (newMin + newMax) / 2),
-    scaleValue: x => x,
-  };
-};
+const getNormalDisplayOpts = createNormalDisplayOptsGetter((min, max, value) =>
+  numericOrDefault(value, (min + max) / 2)
+);
 
 class Range extends React.Component {
   constructor(props) {
@@ -72,23 +41,13 @@ class Range extends React.Component {
 
   render() {
     const { scale, steps, onChange, theme, ...props } = this.props;
+    validateStepParams(props.step, steps);
 
-    if (!!props.step && !!steps) {
-      return (
-        <ErrMsg
-          msg={`Cannot specify both step and steps. Got step = ${props.step}, steps = ${
-            props.steps
-          }`}
-        />
-      );
-    }
-
-    const { min, max, step, value, scaleValue } = (scale === 'log'
-      ? getLogDisplayParams
-      : getNormalDisplayParams)(props);
+    const { min, max, step, logVal, sliderVal, scaleValue } = (scale === 'log'
+      ? getLogDisplayOpts
+      : getNormalDisplayOpts)(props);
     // use `steps` if provided
     const processedStep = isnumeric(steps) ? (max - min) / steps : step;
-    const processedVal = scaleValue(min + step * Math.round((value - min) / step));
 
     return (
       <React.Fragment>
@@ -96,16 +55,20 @@ class Range extends React.Component {
         <input
           className={`control-panel-range-${this.state.id}`}
           type="range"
-          value={processedVal}
+          value={sliderVal}
           min={min}
           max={max}
           step={processedStep}
-          onChange={e => onChange(scaleValue(parseFloat(e.target.value)))}
+          onChange={e => {
+            // We take the value from the slider (range 1 to 100) and scale it into its logarithmic
+            // representation before passing it into the state.
+            onChange(scaleValue(parseFloat(e.target.value)));
+          }}
         />
-        <Value text={processedVal} width="11%" />
+        <Value text={logVal} width="11%" />
       </React.Fragment>
     );
   }
 }
 
-export default withSettingState(Range);
+export default withErrorHandler(withSettingState(Range));

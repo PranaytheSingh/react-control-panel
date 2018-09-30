@@ -1,11 +1,21 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import ControlPanel, { Text, Button, Select, Checkbox, Multibox, Color, Range } from '../src/index';
+import ControlPanel, {
+  Text,
+  Button,
+  Select,
+  Checkbox,
+  Multibox,
+  Color,
+  Range,
+  Interval,
+} from '../src/index';
 
 const initialState = {
   'range slider': 20,
   'stepped slider': 0.6,
+  interval: [25, 50],
   text: 'my setting',
   checkbox: true,
   'color rgb': 'rgb(100, 200, 100',
@@ -14,16 +24,17 @@ const initialState = {
   'multiple checkboxes': [true, true],
 };
 
-const DemoPanel = ({ theme, ...props }) => (
+const DemoPanel = ({ theme, title, ...props }) => (
   <ControlPanel
     theme={theme}
-    title="Example Panel 1"
+    title={title}
     initialState={initialState}
     onChange={console.log}
     {...props}
   >
     <Range label="range slider" min={0} max={100} />
-    <Range label="stepped slider" min={0} max={1} step={0.2} />
+    <Range label="stepped slider" min={0} max={1} />
+    <Interval label="interval" min={0} max={100} />
     <Text label="text" />
     <Checkbox label="checkbox" />
     <Color label="color rgb" format="rgb" />
@@ -40,8 +51,12 @@ const DemoPanel = ({ theme, ...props }) => (
 
 const App = () => (
   <React.Fragment>
-    <DemoPanel theme="light" style={{ marginRight: 11, display: 'inline-block' }} />
-    <DemoPanel theme="dark" style={{ display: 'inline-block' }} />
+    <DemoPanel
+      theme="light"
+      title="Example Panel 1"
+      style={{ marginRight: 11, display: 'inline-block' }}
+    />
+    <DemoPanel theme="dark" title="Example Panel 2" style={{ display: 'inline-block' }} />
   </React.Fragment>
 );
 

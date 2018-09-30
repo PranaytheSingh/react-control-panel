@@ -12,7 +12,7 @@ export { default as Select } from './components/select';
 export { default as Text } from './components/text';
 export { default as Color } from './components/color';
 export { default as Range } from './components/range';
-// TODO: Interval
+export { default as Interval } from './components/interval';
 
 import './components/styles/base.css';
 import './components/styles/color.css';
