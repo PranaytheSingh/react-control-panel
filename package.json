@@ -1,13 +1,14 @@
 {
   "name": "react-control-panel",
-  "version": "0.2.1",
+  "version": "0.2.3",
   "description": "react-compatible, embeddable panel of inputs for parameter settings",
   "main": "dist/index.js",
+  "module": "./lib/index.js",
   "scripts": {
     "start": "cp demo/index.html dist/index.html && webpack-dev-server",
-    "build": "cp demo/index.html dist/index.html && webpack --config webpack.prod.js",
+    "build": "webpack --config webpack.prod.js",
     "lint": "eslint ./index.js ./src",
-    "prepublishOnly": "rm build/* && npm run build"
+    "prepublishOnly": "rm dist/* && npm run build"
   },
   "repository": {
     "type": "git",
