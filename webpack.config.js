@@ -7,8 +7,24 @@ module.exports = {
   },
   output: {
     filename: '[name].js',
-    path: __dirname + '/dist',
+    path: path.resolve(__dirname, 'dist'),
   },
+  externals: [
+    {
+      react: {
+        root: 'React',
+        commonjs: 'react',
+        commonjs2: 'react',
+        amd: 'react',
+      },
+      'react-dom': {
+        root: 'ReactDOM',
+        commonjs: 'react-dom',
+        commonjs2: 'react-dom',
+        amd: 'react-dom',
+      },
+    },
+  ],
   mode: 'development',
   devtool: 'inline-source-map',
   module: {
