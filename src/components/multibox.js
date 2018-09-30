@@ -2,7 +2,7 @@ import React from 'react';
 
 import { withSettingState } from './context';
 
-const Multibox = ({ theme, colors = [], names = [], value = [], onChange }) => (
+const Multibox = ({ theme, colors = [], names = [], count = 2, value, onChange }) => (
   <div
     style={{
       position: 'relative',
@@ -12,7 +12,7 @@ const Multibox = ({ theme, colors = [], names = [], value = [], onChange }) => (
     }}
   >
     <span style={{ display: 'inline-block' }}>
-      {value.map((checked, i) => (
+      {(value || new Array(count).map((_v, i) => value[i] || false)).map((checked, i) => (
         <React.Fragment key={i}>
           <span
             style={{

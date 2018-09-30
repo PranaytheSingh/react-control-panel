@@ -1,7 +1,7 @@
 {
-  "name": "control-panel",
-  "version": "1.3.4",
-  "description": "embeddable panel of inputs for parameter setting",
+  "name": "react-control-panel",
+  "version": "0.1.0",
+  "description": "react compatible embeddable panel of inputs for parameter settings",
   "main": "index.js",
   "scripts": {
     "start": "cp demo/index.html dist/index.html && webpack-dev-server",
@@ -10,7 +10,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/freeman-lab/control-panel.git"
+    "url": "git+https://github.com/ameobea/react-control-panel.git"
   },
   "keywords": [
     "slider",
@@ -20,17 +20,15 @@
     "component",
     "color-picker",
     "dom",
-    "css"
+    "css",
+    "react"
   ],
-  "author": "freeman-lab",
+  "author": "freeman-lab, Casey Primozic <me@ameo.link> (React port)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/freeman-lab/control-panel/issues"
+    "url": "https://github.com/ameobea/react-control-panel/issues"
   },
-  "browserify": {
-    "transform": "brfs"
-  },
-  "homepage": "https://github.com/freeman-lab/control-panel#readme",
+  "homepage": "https://github.com/ameobea/react-control-panel#readme",
   "dependencies": {
     "is-numeric": "0.0.5",
     "is-string": "^1.0.4",
@@ -47,13 +45,8 @@
     "babel-eslint": "^9.0.0",
     "babel-loader": "^8.0.2",
     "css-loader": "^1.0.0",
-    "garnish": "^5.0.1",
-    "smokestack": "^3.4.1",
     "standard": "^7.1.0",
     "style-loader": "^0.23.0",
-    "tap-spec": "^4.1.1",
-    "tape": "^4.5.1",
-    "watchify-server": "^1.0.2",
     "webpack": "^4.20.2",
     "webpack-cli": "^3.1.1",
     "webpack-dev-server": "^3.1.9"
