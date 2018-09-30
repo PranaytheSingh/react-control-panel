@@ -1,12 +1,13 @@
 {
   "name": "react-control-panel",
-  "version": "0.1.0",
-  "description": "react compatible embeddable panel of inputs for parameter settings",
-  "main": "index.js",
+  "version": "0.2.1",
+  "description": "react-compatible, embeddable panel of inputs for parameter settings",
+  "main": "dist/index.js",
   "scripts": {
     "start": "cp demo/index.html dist/index.html && webpack-dev-server",
     "build": "cp demo/index.html dist/index.html && webpack --config webpack.prod.js",
-    "lint": "eslint ./index.js ./src"
+    "lint": "eslint ./index.js ./src",
+    "prepublishOnly": "rm build/* && npm run build"
   },
   "repository": {
     "type": "git",
@@ -32,11 +33,13 @@
   "dependencies": {
     "is-numeric": "0.0.5",
     "is-string": "^1.0.4",
-    "react": "^16.5.2",
     "react-css-component": "^1.0.2",
-    "react-dom": "^16.5.2",
     "simple-color-picker": "^0.1.2",
     "uuid": "^3.3.2"
+  },
+  "peerDependencies": {
+    "react": "^16.5.2",
+    "react-dom": "^16.5.2"
   },
   "devDependencies": {
     "@babel/core": "^7.1.0",
