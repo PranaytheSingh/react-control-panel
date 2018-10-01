@@ -6,10 +6,7 @@ export class InvalidParamsError extends Error {}
 export const ErrMsg = ({ msg }) => <span style={{ color: 'red' }}>{msg}</span>;
 
 class ErrorHandlerWrapper extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = { error: null };
-  }
+  state = { error: null };
 
   componentDidCatch(err, info) {
     this.setState({ errMsg: err.message });
@@ -28,32 +25,32 @@ export const withErrorHandler = Comp => ({ ...props }) => (
   <ErrorHandlerWrapper Comp={Comp} {...props} />
 );
 
-export const validateStepParams = (step, steps) => {
-  if (!!step && !!steps) {
-    throw new InvalidParamsError(
-      `Cannot specify both step and steps. Got step = ${step}, steps = ${steps}`
-    );
+const createValidator = (checkIfInvalid, createErrMsg) => (...args) => {
+  if (!checkIfInvalid(...args)) {
+    return;
   }
+
+  throw new InvalidParamsError(createErrMsg(...args));
 };
 
-export const validateLogStep = step => {
-  if (isnumeric(step)) {
-    throw new InvalidParamsError(
-      `Log may only use steps (integer number of steps), not a step value. Got step = ${step}`
-    );
-  }
-};
+export const validateStepParams = createValidator(
+  (step, steps) => !!step && !!steps,
+  (step, steps) => `Cannot specify both step and steps. Got step = ${step}, steps = ${steps}`
+);
 
-export const validateLogMinMax = (min, max) => {
-  if (min * max <= 0) {
-    throw new InvalidParamsError(
-      `Log range min/max must have the same sign and not equal zero. Got min = ${min}, max = ${max}`
-    );
-  }
-};
+export const validateLogStep = createValidator(
+  isnumeric,
+  step => `Log may only use steps (integer number of steps), not a step value. Got step = ${step}`
+);
 
-export const throwLogRangeError = scaledVal => {
-  throw new InvalidParamsError(
+export const validateLogMinMax = createValidator(
+  (min, max) => min * max <= 0,
+  (min, max) =>
+    `Log range min/max must have the same sign and not equal zero. Got min = ${min}, max = ${max}`
+);
+
+export const throwLogRangeError = createValidator(
+  scaledVal => true,
+  scaledVal =>
     `Log range initial value must have the same sign as min/max and must not equal zero. Got initial value = ${scaledVal}`
-  );
-};
+);

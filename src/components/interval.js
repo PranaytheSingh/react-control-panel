@@ -8,13 +8,11 @@ import {
   numericOrDefaultElse,
   createNormalDisplayOptsGetter,
   withScalerFunctions,
+  clamp,
 } from '../util';
 import Value from './value';
 import './styles/interval.css';
 
-const clamp = (x, min, max) => Math.min(Math.max(x, min), max);
-
-// TODO: merge with other one from `range`
 const getLogDisplayOpts = withScalerFunctions(
   ({ min, max, step, value, scaleValue, scaleValueInverse }) => {
     // Scale the values down from their logarithmic represenations into the range used by the slider
@@ -45,26 +43,21 @@ const getNormalDisplayOpts = createNormalDisplayOptsGetter((min, max, value) => 
 ]);
 
 class Range extends React.Component {
-  constructor(props) {
-    super(props);
-    this.input = React.createRef();
-    this.state = { activeIndex: -1, value: null, min: null, max: null, step: null };
-  }
+  input = React.createRef();
+  state = { activeIndex: -1, value: null, min: null, max: null, step: null };
 
-  mouseX(ev) {
-    // Get mouse position in page coords relative to the container:
-    return ev.pageX - this.input.current.getBoundingClientRect().left;
-  }
+  /**
+   * Gets mouse position in page coords relative to the container
+   */
+  mouseX = ev => ev.pageX - this.input.current.getBoundingClientRect().left;
 
-  calculateFraction(evt, value, min, max) {
-    return {
-      fraction: clamp(this.mouseX(evt) / this.input.current.offsetWidth, 0, 1),
-      lofrac: (value[0] - min) / (max - min),
-      hifrac: (value[1] - min) / (max - min),
-    };
-  }
+  calculateFraction = (evt, value, min, max) => ({
+    fraction: clamp(this.mouseX(evt) / this.input.current.offsetWidth, 0, 1),
+    lofrac: (value[0] - min) / (max - min),
+    hifrac: (value[1] - min) / (max - min),
+  });
 
-  setActiveValue(evt) {
+  setActiveValue = evt => {
     if (this.state.activeIndex === -1) {
       return;
     }
@@ -84,7 +77,7 @@ class Range extends React.Component {
       this.state.activeIndex === 0 ? [this.props.min, value[1]] : [value[0], this.props.max];
     value[this.state.activeIndex] = clamp(newValue, clampTo[0], clampTo[1]);
     this.props.onChange(value);
-  }
+  };
 
   componentDidMount() {
     const mouseHandlerWrapper = fn => evt => {
@@ -95,7 +88,7 @@ class Range extends React.Component {
       fn && fn();
     };
 
-    // install event listeners on the document for mouse movement and release
+    // Install event listeners on the document for mouse movement and release
     document.addEventListener('mousemove', mouseHandlerWrapper());
     document.addEventListener(
       'mouseup',
@@ -128,13 +121,16 @@ class Range extends React.Component {
           style={{ backgroundColor: theme.background2 }}
           ref={this.input}
           onMouseDown={evt => {
-            // Figure out which side is being clicked and adjust the active index accodingly
             this.setState({ dragging: true });
+
+            // Figure out which side is being clicked and adjust the active index accodingly
             const { fraction, hifrac, lofrac } = this.calculateFraction(evt, sliderVal, min, max);
+
             // This is just for making decisions, so perturb it ever so slightly just in case the
             // bounds are numerically equal.
             const lodiff = Math.abs(lofrac - Math.abs(max - min) * 1e-15 - fraction);
             const hidiff = Math.abs(hifrac + Math.abs(max - min) * 1e-15 - fraction);
+
             // Determine which one is closer
             this.setState({ activeIndex: lodiff < hidiff ? 0 : 1 });
           }}
@@ -155,4 +151,4 @@ class Range extends React.Component {
   }
 }
 
-export default withErrorHandler(withSettingState(Range));
+export default withErrorHandler(withSettingState()(Range));

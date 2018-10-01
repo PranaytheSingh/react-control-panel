@@ -34,10 +34,7 @@ const getNormalDisplayOpts = createNormalDisplayOptsGetter((min, max, value) =>
 );
 
 class Range extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = { id: uuid() };
-  }
+  state = { id: uuid() };
 
   render() {
     const { scale, steps, onChange, theme, ...props } = this.props;
@@ -71,4 +68,4 @@ class Range extends React.Component {
   }
 }
 
-export default withErrorHandler(withSettingState(Range));
+export default withErrorHandler(withSettingState()(Range));

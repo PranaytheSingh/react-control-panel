@@ -1,56 +1,61 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import { withTheme, Container } from './context';
 
-class Button extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = { focus: false, hover: false, active: false };
-  }
+const getStyle = (theme, { focused, active, hover }) => {
+  const hoverStyle = {
+    color: theme.text2,
+    backgroundColor: theme.background2hover,
+  };
 
-  render() {
-    const { label, action, theme } = this.props;
-    return (
-      <Container>
-        <button
-          style={{
-            position: 'absolute',
-            textAlign: 'center',
-            height: 20,
-            width: '62%',
-            border: 'none',
-            cursor: 'pointer',
-            right: 0,
-            fontFamily: 'inherit',
-            color: theme.text2,
-            backgroundColor: theme.background2,
-            outline: this.state.focused ? 'none' : undefined,
-            ...(this.state.hover
-              ? {
-                  color: theme.text2,
-                  backgroundColor: theme.background2hover,
-                }
-              : {}),
-            ...(this.state.active
-              ? {
-                  color: theme.background2,
-                  backgroundColor: theme.text2,
-                }
-              : {}),
-          }}
-          onClick={action}
-          onFocus={() => this.setState({ focus: true })}
-          onBlur={() => this.setState({ focus: false })}
-          onMouseEnter={() => this.setState({ hover: true })}
-          onMouseLeave={() => this.setState({ hover: false })}
-          onMouseDown={() => this.setState({ active: true })}
-          onMouseUp={() => this.setState({ active: false })}
-        >
-          {label}
-        </button>
-      </Container>
-    );
-  }
+  const activeStyle = {
+    color: theme.background2,
+    backgroundColor: theme.text2,
+  };
+
+  return {
+    position: 'absolute',
+    textAlign: 'center',
+    height: 20,
+    width: '62%',
+    border: 'none',
+    cursor: 'pointer',
+    right: 0,
+    fontFamily: 'inherit',
+    color: theme.text2,
+    backgroundColor: theme.background2,
+    outline: focused ? 'none' : undefined,
+    ...(hover ? hoverStyle : {}),
+    ...(active ? activeStyle : {}),
+  };
+};
+
+class UnwrappedButton extends React.Component {
+  state = { focus: false, hover: false, active: false };
+
+  render = () => (
+    <Container>
+      <button
+        style={getStyle(this.props.theme, this.state)}
+        onClick={this.props.action}
+        onFocus={() => this.setState({ focus: true })}
+        onBlur={() => this.setState({ focus: false })}
+        onMouseEnter={() => this.setState({ hover: true })}
+        onMouseLeave={() => this.setState({ hover: false })}
+        onMouseDown={() => this.setState({ active: true })}
+        onMouseUp={() => this.setState({ active: false })}
+      >
+        {this.props.label}
+      </button>
+    </Container>
+  );
 }
 
-export default withTheme(Button);
+const Button = withTheme(UnwrappedButton);
+Button.propTypes = {
+  action: PropTypes.func.isRequired,
+  label: PropTypes.string.isRequired,
+};
+
+export default Button;

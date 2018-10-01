@@ -94,6 +94,8 @@ const DemoPanel = () => (
 );
 ```
 
+### classic setting definitions
+
 It's also possible to use the old array-based definition system from the original version:
 
 ```javascript
@@ -136,6 +138,7 @@ The `ControlPanel` component takes an array of children setting components that 
 - `width` width of panel in pixels
 - `position` where to place the panel as `top-left` • `top-right` • `bottom-left` • `bottom-right`, if `undefined` will just use relative positioning
 - `style` is an object of inline styles that will be merged into the default styles of the panel's main component.
+- `settings` is an array of setting definitions in the same format as the orignal library; this can be used as an alternative to passing in setting components as children. See the `classic setting definitions` section above for an example.
 - `state` is an external state object that will be used to replace the state maintained by the panel itself. For more info, see the `external state` section below.
 - `contextCb` accepts a callback that will be provided with an object that can be used to get and set the inner state used by the panel directly. For more info, see the `panel context` section below.
 

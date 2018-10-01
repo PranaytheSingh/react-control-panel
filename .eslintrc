@@ -29,6 +29,12 @@
       }
     ]
   },
+  "settings": {
+    "react": {
+      "pragma": "React",
+      "version": "16.5"
+    }
+  },
   "env": {
     "es6": true,
     "browser": true
@@ -43,7 +49,7 @@
     },
     "ecmaVersion": 2017
   },
-  "plugins": ["react"],
+  "plugins": ["babel", "react"],
   "globals": {
     "require": true,
     "module": true,

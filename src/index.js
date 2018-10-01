@@ -1,19 +1,10 @@
 import React from 'react';
 import isstring from 'is-string';
+import PropTypes from 'prop-types';
 
 import themes from './themes';
 import Title from './components/title';
 import ControlPanelContext from './components/context';
-
-export { default as Button } from './components/button';
-export { default as Checkbox } from './components/checkbox';
-export { default as Multibox } from './components/multibox';
-export { default as Select } from './components/select';
-export { default as Text } from './components/text';
-export { default as Color } from './components/color';
-export { default as Range } from './components/range';
-export { default as Interval } from './components/interval';
-
 import Button from './components/button';
 import Checkbox from './components/checkbox';
 import Multibox from './components/multibox';
@@ -23,9 +14,18 @@ import Color from './components/color';
 import Range from './components/range';
 import Interval from './components/interval';
 import { createPolyProxy } from './util';
-
 import './components/styles/base.css';
 import './components/styles/color.css';
+
+export { default as Button } from './components/button';
+export { default as Checkbox } from './components/checkbox';
+export { default as Multibox } from './components/multibox';
+export { default as Select } from './components/select';
+export { default as Text } from './components/text';
+export { default as Color } from './components/color';
+export { default as Range } from './components/range';
+export { default as Interval } from './components/interval';
+export { default as themes } from './themes';
 
 const settingTypeMapping = {
   range: Range,
@@ -37,6 +37,8 @@ const settingTypeMapping = {
   multibox: Multibox,
   interval: Interval,
 };
+
+const VALID_POSITIONS = ['top-right', 'top-left', 'bottom-right', 'bottom-left'];
 
 class ControlPanel extends React.Component {
   constructor(props) {
@@ -51,10 +53,10 @@ class ControlPanel extends React.Component {
     const { derivedInitialState, derivedSettings } = this.props.settings.reduce(
       ({ derivedInitialState, derivedSettings }, { type, label, initial, ...props }) => {
         const SettingComponent = settingTypeMapping[type];
+
         if (!SettingComponent) {
           return { derivedInitialState, derivedSettings };
         }
-
         return {
           derivedInitialState: { ...derivedInitialState, [label]: initial },
           derivedSettings: [...derivedSettings, { SettingComponent, label, props }],
@@ -93,16 +95,9 @@ class ControlPanel extends React.Component {
   }
 
   render() {
-    const {
-      width = 300,
-      theme: suppliedTheme = 'dark',
-      position,
-      title,
-      children,
-      style = {},
-    } = this.props;
+    const { width, theme: suppliedTheme, position, title, children, style } = this.props;
 
-    const theme = isstring(suppliedTheme) ? themes[suppliedTheme] : suppliedTheme;
+    const theme = isstring(suppliedTheme) ? themes[suppliedTheme] || themes['dark'] : suppliedTheme;
     const state = this.getState();
 
     return (
@@ -115,9 +110,7 @@ class ControlPanel extends React.Component {
           padding: 14,
           paddingBottom: 8,
           opacity: 0.95,
-          position: ['top-right', 'top-left', 'bottom-right', 'bottom-left'].includes(position)
-            ? 'absolute'
-            : undefined,
+          position: VALID_POSITIONS.includes(position) ? 'absolute' : undefined,
           ...(['top-right', 'bottom-right'].includes(position) ? { right: 8 } : { bottom: 8 }),
           ...(['top-right', 'top-left'].includes(position) ? { top: 8 } : { bottom: 8 }),
           ...style,
@@ -146,5 +139,25 @@ class ControlPanel extends React.Component {
     );
   }
 }
+
+ControlPanel.propTypes = {
+  initialState: PropTypes.object,
+  onChange: PropTypes.func,
+  theme: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
+  title: PropTypes.string,
+  width: PropTypes.number,
+  position: PropTypes.oneOf(VALID_POSITIONS),
+  style: PropTypes.object,
+  settings: PropTypes.arrayOf(PropTypes.object),
+  state: PropTypes.object,
+  contextCb: PropTypes.func,
+};
+
+ControlPanel.defaultProps = {
+  width: 300,
+  theme: 'dark',
+  onChange: () => {},
+  style: {},
+};
 
 export default ControlPanel;

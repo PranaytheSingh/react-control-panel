@@ -41,8 +41,10 @@ export const withScalerFunctions = logOptsGetter => args => {
   return logOptsGetter({ ...args, ...getLogScalerFunctions(logmin, logmax, logsign) });
 };
 
-// Since apparently 15% of users worldwide don't have a browser that supports `Proxy`, we create
-// a partial polyfill that fits our needs.
+/**
+ * Since apparently 15% of users worldwide don't have a browser that supports `Proxy`, we create
+ * a partial polyfill that fits our needs.
+ */
 export const createPolyProxy = (target, handler, setState) => {
   if (typeof Proxy === 'function') {
     return new Proxy(target, handler);
@@ -66,3 +68,5 @@ export const createPolyProxy = (target, handler, setState) => {
   Object.defineProperties(proxy, props);
   return proxy;
 };
+
+export const clamp = (x, min, max) => Math.min(Math.max(x, min), max);

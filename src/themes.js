@@ -1,4 +1,4 @@
-module.exports = {
+export default {
   light: {
     background1: 'rgb(227,227,227)',
     background2: 'rgb(204,204,204)',

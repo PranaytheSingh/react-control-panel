@@ -3,7 +3,24 @@ import uuid from 'uuid/v4';
 
 import { withSettingState } from './context';
 
-const getStyles = (theme, checked) => {
+const Checkbox = ({ theme, value: checked, onChange, styles }) => {
+  const id = uuid();
+
+  return (
+    <React.Fragment>
+      <input
+        id={id}
+        type="checkbox"
+        checked={checked}
+        style={styles.checkbox}
+        onChange={() => onChange(!checked)}
+      />
+      <label htmlFor={id} style={styles.label} />
+    </React.Fragment>
+  );
+};
+
+const mapPropsToStyles = ({ theme, value: checked }) => {
   const labelCheckedStyle = {
     width: 10,
     height: 10,
@@ -33,24 +50,4 @@ const getStyles = (theme, checked) => {
   };
 };
 
-const Checkbox = ({ theme, value: checked, onChange }) => {
-  const styles = getStyles(theme, checked);
-  const id = uuid();
-
-  return (
-    <React.Fragment>
-      <input
-        id={id}
-        type="checkbox"
-        checked={checked}
-        style={styles.checkbox}
-        onChange={() => onChange(!checked)}
-      />
-      <label htmlFor={id} style={styles.label}>
-        {''}
-      </label>
-    </React.Fragment>
-  );
-};
-
-export default withSettingState(Checkbox);
+export default withSettingState(mapPropsToStyles)(Checkbox);
