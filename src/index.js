@@ -22,6 +22,7 @@ import Text from './components/text';
 import Color from './components/color';
 import Range from './components/range';
 import Interval from './components/interval';
+import { createPolyProxy } from './util';
 
 import './components/styles/base.css';
 import './components/styles/color.css';
@@ -40,7 +41,7 @@ const settingTypeMapping = {
 class ControlPanel extends React.Component {
   constructor(props) {
     super(props);
-    this.state = props.initialState || {};
+    this.state = props.initialState || props.state || {};
     this.derivedSettings = [];
 
     if (!this.props.settings) {
@@ -66,18 +67,43 @@ class ControlPanel extends React.Component {
     this.derivedSettings = derivedSettings;
   }
 
+  componentDidMount() {
+    if (!this.props.contextCb) {
+      return;
+    }
+
+    const handler = {
+      get: (state, prop) => this.state[prop],
+      set: (state, prop, val) => this.setState({ [prop]: val }),
+    };
+
+    this.props.contextCb(createPolyProxy(this.state, handler, this.setState.bind(this)));
+  }
+
+  getState() {
+    return this.props.state ? this.props.state : this.state;
+  }
+
+  indicateChange(label, newVal) {
+    const newState = { ...this.getState(), [label]: newVal };
+    this.props.onChange(label, newVal, newState);
+    if (!this.props.state) {
+      this.setState(newState);
+    }
+  }
+
   render() {
     const {
       width = 300,
       theme: suppliedTheme = 'dark',
       position,
       title,
-      onChange,
       children,
       style = {},
     } = this.props;
 
     const theme = isstring(suppliedTheme) ? themes[suppliedTheme] : suppliedTheme;
+    const state = this.getState();
 
     return (
       <div
@@ -99,13 +125,9 @@ class ControlPanel extends React.Component {
       >
         <ControlPanelContext.Provider
           value={{
-            state: this.state,
+            state,
             theme,
-            indicateChange: (label, newVal) => {
-              const newState = { ...this.state, [label]: newVal };
-              onChange(label, newVal, newState);
-              this.setState(newState);
-            },
+            indicateChange: this.indicateChange.bind(this),
           }}
         >
           {title ? <Title title={title} /> : null}
@@ -115,7 +137,7 @@ class ControlPanel extends React.Component {
               key={label}
               label={label}
               {...props}
-              value={this.state[label]}
+              value={state[label]}
               onChange={newVal => this.setState({ [label]: newVal })}
             />
           ))}

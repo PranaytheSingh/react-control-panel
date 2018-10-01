@@ -53,42 +53,63 @@ const DemoPanel = ({ theme, title, ...props }) => (
   </ControlPanel>
 );
 
-const App = () => (
-  <React.Fragment>
-    <DemoPanel
-      theme="light"
-      title="Example Panel 1"
-      style={{ marginRight: 11, display: 'inline-block' }}
-    />
-    <DemoPanel theme="dark" title="Example Panel 2" style={{ display: 'inline-block' }} />
-    <DemoPanel
-      theme="dark"
-      title="Example Panel 3"
-      position="bottom-right"
-      settings={[
-        { type: 'range', label: 'my range', min: 0, max: 100, initial: 20 },
-        { type: 'range', label: 'log range', min: 0.1, max: 100, initial: 20, scale: 'log' },
-        { type: 'text', label: 'my text', initial: 'my cool setting' },
-        { type: 'checkbox', label: 'my checkbox', initial: true },
-        { type: 'color', label: 'my color', format: 'rgb', initial: 'rgb(10,200,0)' },
-        {
-          type: 'button',
-          label: 'gimme an alert',
-          action: () => {
-            alert('hello!');
-          },
-        },
-        {
-          type: 'select',
-          label: 'select one',
-          options: ['option 1', 'option 2'],
-          initial: 'option 1',
-        },
-        { type: 'multibox', label: 'check many', count: 3, initial: [true, false, true] },
-      ]}
-    />
-  </React.Fragment>
-);
+class App extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { text: 'val from outer state' };
+  }
+
+  render() {
+    return (
+      <React.Fragment>
+        <DemoPanel
+          theme="light"
+          title="Example Panel 1"
+          style={{ marginRight: 11, display: 'inline-block' }}
+        />
+        <DemoPanel theme="dark" title="Example Panel 2" style={{ display: 'inline-block' }} />
+        <DemoPanel
+          theme="dark"
+          title="Example Panel 3"
+          position="bottom-right"
+          settings={[
+            { type: 'range', label: 'my range', min: 0, max: 100, initial: 20 },
+            { type: 'range', label: 'log range', min: 0.1, max: 100, initial: 20, scale: 'log' },
+            { type: 'text', label: 'my text', initial: 'my cool setting' },
+            { type: 'checkbox', label: 'my checkbox', initial: true },
+            { type: 'color', label: 'my color', format: 'rgb', initial: 'rgb(10,200,0)' },
+            {
+              type: 'button',
+              label: 'gimme an alert',
+              action: () => {
+                alert('hello!');
+              },
+            },
+            {
+              type: 'select',
+              label: 'select one',
+              options: ['option 1', 'option 2'],
+              initial: 'option 1',
+            },
+            { type: 'multibox', label: 'check many', count: 3, initial: [true, false, true] },
+          ]}
+          contextCb={console.warn}
+        />
+        <ControlPanel
+          title="External State"
+          state={this.state}
+          onChange={(key, val) =>
+            console.log(this.state, key, val) || this.setState({ [key]: val })
+          }
+          position="bottom-left"
+          style={{ display: 'inline-block', left: 8 }}
+        >
+          <Text label="text" />
+        </ControlPanel>
+      </React.Fragment>
+    );
+  }
+}
 
 const root = document.getElementById('root');
 ReactDOM.render(<App />, root);

@@ -136,6 +136,8 @@ The `ControlPanel` component takes an array of children setting components that 
 - `width` width of panel in pixels
 - `position` where to place the panel as `top-left` • `top-right` • `bottom-left` • `bottom-right`, if `undefined` will just use relative positioning
 - `style` is an object of inline styles that will be merged into the default styles of the panel's main component.
+- `state` is an external state object that will be used to replace the state maintained by the panel itself. For more info, see the `external state` section below.
+- `contextCb` accepts a callback that will be provided with an object that can be used to get and set the inner state used by the panel directly. For more info, see the `panel context` section below.
 
 Each child setting component must be one of `Range` • `Input` • `Checkbox` • `Color` • `Interval` • `Select`. Each `label` must be unique as it maps to a top-level key of the state object for the whole `ControlPanel`.
 
@@ -147,6 +149,58 @@ Some setting components have additional properties:
 - Inputs of type `interval` obey the same semantics as `range` inputs, except the input and output is a two-element array corresponding to the low/high bounds, e.g. `initial: [1, 7.5]`.
 - Inputs of type `select` can specify a list of options, either as an `Array` (in which case the value is the same as the option text) or as an object containing key/value pairs (in which case the key/value pair maps to value value/label pairs).
 - Inputs of type `multibox` can specify a number of checkboxes, either by providing a `count` or a list of `names` from which the number will be inferred, in which case the color of each box and a text name can also be provided as lists `colors` and `names`
+
+### external state
+
+It is sometimes desirable to hoist the state for a panel up into something like Redux rather than letting the component handle it itself. This is supported by passing a `state` prop into the `ControlPanel` which you are in charge of keeping updated with new values provided by the panel's `onChange` prop callback. Here's an example of how this would work with state hoisted into a parent component:
+
+```js
+class Wrapper extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      label1: 'val',
+      ...
+    };
+  }
+
+  render() {
+    return (
+      <ControlPanel
+        state={this.state}
+        {/* \/ not necessary - this is inferred automatically when `state` is provided */}
+        {/*initialState={this.state}*/}
+        onChange={(key, val) => this.setState({ [key]: val })}
+        title='Panel with External State'
+      />
+        ...
+    </ControlPanel>
+    );
+  }
+}
+```
+
+Please note that panel context will not work if you use external state.
+
+### panel context
+
+As mentioned above, it's possible to pass a callback to the `ControlPanel` component which will be supplied with a special context object after the component has mounted. This allows the underlying state to be directly viewed and manipulated from other parts of the application while still being reflected dynamically in the UI. Here's an example:
+
+```javascript
+const handleContext = ctx => {
+  console.log(ctx['label']); // prints the stored value for that setting
+  ctx['my range'] = 10; // this sets the value of the 'my range' setting to 10 in the panel
+  ctx['multibox'][1] = false; // this doesn't work; you can only set top-level setting values
+  ctx['multibox'] = [true, false, true]; // do this instead
+  console.log(Object.entries(ctx)); // this works, even with the polyfill
+};
+
+<ControlPanel contextCb={handleContext}>...</ControlPanel>;
+```
+
+In browsers that don't support the ES6 `Proxy` API, a shallow polyfill is used which allows values to be get, set, and listed which should be enough for most applications.
+
+Please note that you cannot use external state if you are supplying a panel context callback.
 
 ## development
 
