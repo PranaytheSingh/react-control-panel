@@ -74,6 +74,11 @@ class ControlPanel extends React.Component {
   }
 
   componentDidMount() {
+    if (this.props.draggable) {
+      document.addEventListener('mousemove', this.handleMouseDrag);
+      document.addEventListener('mouseup', () => this.setState({ dragging: false }));
+    }
+
     if (!this.props.contextCb) {
       return;
     }
@@ -85,11 +90,6 @@ class ControlPanel extends React.Component {
 
     const setData = data => this.setState({ data: { ...this.state.data, ...data } });
     this.props.contextCb(createPolyProxy(this.state.data, handler, setData));
-
-    if (this.props.draggable) {
-      document.addEventListener('mousemove', this.handleMouseDrag);
-      document.addEventListener('mouseup', () => this.setState({ dragging: false }));
-    }
   }
 
   getState() {
