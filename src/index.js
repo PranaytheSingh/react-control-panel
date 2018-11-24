@@ -43,7 +43,11 @@ const VALID_POSITIONS = ['top-right', 'top-left', 'bottom-right', 'bottom-left']
 class ControlPanel extends React.Component {
   constructor(props) {
     super(props);
-    this.state = props.initialState || props.state || {};
+    const position = {
+      ...(['top-right', 'bottom-right'].includes(props.position) ? { right: 8 } : { bottom: 8 }),
+      ...(['top-right', 'top-left'].includes(props.position) ? { top: 8 } : { bottom: 8 }),
+    };
+    this.state = { data: props.initialState || props.state || {}, position };
     this.derivedSettings = [];
 
     if (!this.props.settings) {
@@ -65,7 +69,7 @@ class ControlPanel extends React.Component {
       { derivedInitialState: {}, derivedSettings: [] }
     );
 
-    this.state = { ...this.state, ...derivedInitialState };
+    this.state.data = { ...this.state.data, ...derivedInitialState };
     this.derivedSettings = derivedSettings;
   }
 
@@ -75,46 +79,80 @@ class ControlPanel extends React.Component {
     }
 
     const handler = {
-      get: (state, prop) => this.state[prop],
-      set: (state, prop, val) => this.setState({ [prop]: val }),
+      get: (state, prop) => this.state.data[prop],
+      set: (state, prop, val) => this.setState({ data: { ...this.state.data, [prop]: val } }),
     };
 
-    this.props.contextCb(createPolyProxy(this.state, handler, this.setState.bind(this)));
+    const setData = data => this.setState({ data: { ...this.state.data, ...data } });
+    this.props.contextCb(createPolyProxy(this.state.data, handler, setData));
+
+    if (this.props.draggable) {
+      document.addEventListener('mousemove', this.handleMouseDrag);
+      document.addEventListener('mouseup', () => this.setState({ dragging: false }));
+    }
   }
 
   getState() {
-    return this.props.state ? this.props.state : this.state;
+    return this.props.state ? this.props.state : this.state.data;
   }
 
   indicateChange(label, newVal) {
-    const newState = { ...this.getState(), [label]: newVal };
+    const newState = { ...this.getState(), ...this.state.data, [label]: newVal };
     this.props.onChange(label, newVal, newState);
     if (!this.props.state) {
-      this.setState(newState);
+      this.setState({ data: newState });
     }
   }
+
+  handleMouseDown = evt => {
+    if (evt.target.className.includes('draggable')) {
+      this.setState({
+        dragging: true,
+        mouseDownCoords: { x: evt.pageX, y: evt.pageY },
+        mouseDownPos: { ...this.state.position },
+      });
+    }
+  };
+
+  handleMouseDrag = evt => {
+    if (this.state.dragging) {
+      const diffX = evt.pageX - this.state.mouseDownCoords.x;
+      const diffY = evt.pageY - this.state.mouseDownCoords.y;
+
+      const newPosition = { ...this.state.position, right: this.state.mouseDownPos.right - diffX };
+      if (this.state.mouseDownPos.top !== undefined) {
+        newPosition.top = this.state.mouseDownPos.top + diffY;
+      } else if (this.state.mouseDownPos.bottom !== undefined) {
+        newPosition.bottom = this.state.mouseDownPos.bottom - diffY;
+      }
+
+      this.setState({ position: newPosition });
+    }
+  };
 
   render() {
     const { width, theme: suppliedTheme, position, title, children, style } = this.props;
 
     const theme = isstring(suppliedTheme) ? themes[suppliedTheme] || themes['dark'] : suppliedTheme;
     const state = this.getState();
+    const combinedStyle = {
+      display: 'inline-block',
+      background: theme.background1,
+      width,
+      padding: 14,
+      paddingBottom: 8,
+      opacity: 0.95,
+      position: VALID_POSITIONS.includes(position) ? 'absolute' : undefined,
+      ...(this.state.position || {}),
+      cursor: this.props.draggable ? 'move' : undefined,
+      ...style,
+    };
 
     return (
       <div
-        className="control-panel"
-        style={{
-          display: 'inline-block',
-          background: theme.background1,
-          width,
-          padding: 14,
-          paddingBottom: 8,
-          opacity: 0.95,
-          position: VALID_POSITIONS.includes(position) ? 'absolute' : undefined,
-          ...(['top-right', 'bottom-right'].includes(position) ? { right: 8 } : { bottom: 8 }),
-          ...(['top-right', 'top-left'].includes(position) ? { top: 8 } : { bottom: 8 }),
-          ...style,
-        }}
+        className="control-panel draggable"
+        onMouseDown={this.props.draggable ? this.handleMouseDown : undefined}
+        style={combinedStyle}
       >
         <ControlPanelContext.Provider
           value={{
@@ -131,7 +169,7 @@ class ControlPanel extends React.Component {
               label={label}
               {...props}
               value={state[label]}
-              onChange={newVal => this.setState({ [label]: newVal })}
+              onChange={newVal => this.setState({ data: { ...this.state.data, [label]: newVal } })}
             />
           ))}
         </ControlPanelContext.Provider>
@@ -151,6 +189,7 @@ ControlPanel.propTypes = {
   settings: PropTypes.arrayOf(PropTypes.object),
   state: PropTypes.object,
   contextCb: PropTypes.func,
+  draggable: PropTypes.bool,
 };
 
 ControlPanel.defaultProps = {

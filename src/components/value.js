@@ -13,6 +13,7 @@ export default withTheme(({ theme, text, width, left }) => {
       display: 'inline-block',
       overflow: 'hidden',
       right: !left ? 0 : undefined,
+      cursor: 'auto',
     },
     text: {
       color: theme.text2,

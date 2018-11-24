@@ -29,14 +29,16 @@ const Label = withTheme(({ label, theme }) => {
   const styles = getLabelStyles(theme);
 
   return (
-    <div style={styles.body}>
-      <span style={styles.text}>{label}</span>
+    <div style={styles.body} className="draggable">
+      <span className="draggable" style={styles.text}>
+        {label}
+      </span>
     </div>
   );
 });
 
 export const Container = ({ label, children }) => (
-  <div className="container">
+  <div className="container draggable">
     <Label label={label || ''} />
     {children}
   </div>

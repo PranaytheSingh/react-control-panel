@@ -70,6 +70,7 @@ class Color extends React.Component {
       width: 100,
       zIndex: 8,
       display: this.state.colorHovered || this.state.pickerHovered ? undefined : 'none',
+      cursor: 'default',
     },
   });
 

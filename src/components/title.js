@@ -11,5 +11,9 @@ export default withTheme(({ title, theme }) => {
     marginBottom: 4,
   };
 
-  return <div style={style}>{title}</div>;
+  return (
+    <div style={style} className="draggable">
+      {title}
+    </div>
+  );
 });

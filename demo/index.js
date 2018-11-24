@@ -67,6 +67,7 @@ class App extends React.Component {
       <DemoPanel
         theme="dark"
         title="Example Panel 3"
+        draggable
         position="bottom-right"
         settings={[
           { type: 'range', label: 'my range', min: 0, max: 100, initial: 20 },

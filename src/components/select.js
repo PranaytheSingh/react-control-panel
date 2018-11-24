@@ -29,6 +29,7 @@ const mapPropsToStyles = ({ theme }) => {
     position: 'absolute',
     right: '2.5%',
     zIndex: 1,
+    cursor: 'auto',
   };
 
   return {

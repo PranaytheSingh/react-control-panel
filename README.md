@@ -137,6 +137,7 @@ The `ControlPanel` component takes an array of children setting components that 
 - `title` a title to add to the top of the panel
 - `width` width of panel in pixels
 - `position` where to place the panel as `top-left` • `top-right` • `bottom-left` • `bottom-right`, if `undefined` will just use relative positioning
+- `draggable` makes the entire control panel draggable.
 - `style` is an object of inline styles that will be merged into the default styles of the panel's main component.
 - `settings` is an array of setting definitions in the same format as the orignal library; this can be used as an alternative to passing in setting components as children. See the `classic setting definitions` section above for an example.
 - `state` is an external state object that will be used to replace the state maintained by the panel itself. For more info, see the `external state` section below.
