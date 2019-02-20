@@ -76,7 +76,11 @@ class ControlPanel extends React.Component {
   componentDidMount() {
     if (this.props.draggable) {
       document.addEventListener('mousemove', this.handleMouseDrag);
-      document.addEventListener('mouseup', () => this.setState({ dragging: false }));
+      // `setTimeout` here in order to avoid re-rendering the component and potentially discarding
+      // new data from child settings that were changed as a result of this.
+      document.addEventListener('mouseup', () =>
+        setTimeout(() => this.setState({ dragging: false }))
+      );
     }
 
     if (!this.props.contextCb) {
