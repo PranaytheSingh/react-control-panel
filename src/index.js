@@ -28,6 +28,8 @@ export { default as Range } from './components/range';
 export { default as Interval } from './components/interval';
 export { default as Custom } from './components/custom';
 export { default as themes } from './themes';
+export { default as Value } from './components/value';
+export { Container, withSettingState, withTheme, Label } from './components/context';
 
 const settingTypeMapping = {
   range: Range,

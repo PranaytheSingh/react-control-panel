@@ -25,7 +25,7 @@ const getLabelStyles = theme => ({
   },
 });
 
-const Label = withTheme(({ label, theme }) => {
+export const Label = withTheme(({ label, theme }) => {
   const styles = getLabelStyles(theme);
 
   return (
