@@ -222,6 +222,14 @@ To develop on this library, simply run the following commands:
 
 Then, open [localhost:9000](http://locahost:9000/) in your web browser. The page being shown is found in `/demo`, and any changes to it or the library itself will be hot-reloaded.
 
+### building the demo for publishing
+
+1. Change `demo.js` to `index.js` in `demo/index.html`
+1. Run `cp demo/index.html dist/index.html`
+1. Comment out the `externals` in `webpack.prod.js`
+1. Run `yarn build demo`
+1. The demo application will be built into `dist`
+
 #### see also
 
 - [oui](https://github.com/wearekuva/oui)

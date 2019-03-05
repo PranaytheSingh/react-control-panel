@@ -13,6 +13,7 @@ import Text from './components/text';
 import Color from './components/color';
 import Range from './components/range';
 import Interval from './components/interval';
+import Custom from './components/custom';
 import { createPolyProxy } from './util';
 import './components/styles/base.css';
 import './components/styles/color.css';
@@ -37,6 +38,7 @@ const settingTypeMapping = {
   select: Select,
   multibox: Multibox,
   interval: Interval,
+  custom: Custom,
 };
 
 const VALID_POSITIONS = ['top-right', 'top-left', 'bottom-right', 'bottom-left'];
@@ -110,7 +112,7 @@ class ControlPanel extends React.Component {
   }
 
   handleMouseDown = evt => {
-    if (evt.target.className.includes('draggable')) {
+    if ((evt.target.className || '').includes('draggable')) {
       this.setState({
         dragging: true,
         mouseDownCoords: { x: evt.pageX, y: evt.pageY },

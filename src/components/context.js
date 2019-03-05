@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useMemo } from 'react';
 
 const ControlPanelContext = React.createContext({});
 export default ControlPanelContext;
@@ -44,6 +44,10 @@ export const Container = ({ label, children }) => (
   </div>
 );
 
+const WithSettingStateWrapper = React.memo(({ renderContainer, label, children }) =>
+  renderContainer ? <Container label={label}>{children}</Container> : children
+);
+
 export const withSettingState = mapPropsToStyles => Comp => ({ label, ...props }) => (
   <ControlPanelContext.Consumer>
     {({ state, setState, theme, indicateChange }) => {
@@ -57,15 +61,13 @@ export const withSettingState = mapPropsToStyles => Comp => ({ label, ...props }
         compProps.styles = mapPropsToStyles(compProps);
       }
 
-      const Wrapper =
-        props.renderContainer === false
-          ? Fragment
-          : ({ children }) => <Container label={label}>{children}</Container>;
-
       return (
-        <Wrapper>
+        <WithSettingStateWrapper
+          label={label}
+          renderContainer={props.renderContainer === false ? false : true}
+        >
           <Comp {...compProps} />
-        </Wrapper>
+        </WithSettingStateWrapper>
       );
     }}
   </ControlPanelContext.Consumer>
