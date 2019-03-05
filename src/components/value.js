@@ -2,7 +2,7 @@ import React from 'react';
 
 import { withTheme } from './context';
 
-export default withTheme(({ theme, text, width, left }) => {
+const Value = ({ theme, text, width, left }) => {
   const styles = {
     body: {
       position: 'absolute',
@@ -32,4 +32,8 @@ export default withTheme(({ theme, text, width, left }) => {
       <span style={styles.text}>{text}</span>
     </div>
   );
-});
+};
+
+const EnhancedValue = withTheme(Value);
+
+export default EnhancedValue;

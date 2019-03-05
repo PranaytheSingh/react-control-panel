@@ -25,6 +25,7 @@ export { default as Text } from './components/text';
 export { default as Color } from './components/color';
 export { default as Range } from './components/range';
 export { default as Interval } from './components/interval';
+export { default as Custom } from './components/custom';
 export { default as themes } from './themes';
 
 const settingTypeMapping = {

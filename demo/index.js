@@ -10,7 +10,29 @@ import ControlPanel, {
   Color,
   Range,
   Interval,
+  Custom,
 } from '../src/index';
+
+const CustomInput = ({ value, onChange, theme }) => (
+  <div style={{ display: 'flex', flexDirection: 'row' }}>
+    <div style={{ color: 'orchid', paddingTop: 3, display: 'inline-block', width: '36%' }}>
+      100% Custom Component
+    </div>
+    <div style={{ width: '60%', display: 'inline-block' }}>
+      <input
+        style={{
+          color: theme.background1,
+          marginTop: 8,
+          backgroundColor: theme.foreground1,
+          width: '100%',
+          marginLeft: 6,
+        }}
+        value={value}
+        onChange={evt => onChange(evt.target.value)}
+      />
+    </div>
+  </div>
+);
 
 const initialState = {
   'range slider': 20,
@@ -22,6 +44,7 @@ const initialState = {
   'color hex': '#30b2ba',
   selection: 'option 1',
   'multiple checkboxes': [true, true],
+  'custom component': 1,
 };
 
 const DemoPanel = ({ theme, title, ...props }) => (
@@ -48,6 +71,7 @@ const DemoPanel = ({ theme, title, ...props }) => (
           colors={['rgb(100,120,230)', 'rgb(210,100,190)']}
           names={['box1', 'box2']}
         />
+        <Custom label="custom component" renderContainer={false} Comp={CustomInput} />
       </React.Fragment>
     )}
   </ControlPanel>

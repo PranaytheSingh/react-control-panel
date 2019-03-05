@@ -69,4 +69,6 @@ export const createPolyProxy = (target, handler, setState) => {
   return proxy;
 };
 
+export const compose = (...functions) => arg => functions.reduceRight((acc, fun) => fun(acc), arg);
+
 export const clamp = (x, min, max) => Math.min(Math.max(x, min), max);

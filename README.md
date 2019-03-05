@@ -15,7 +15,7 @@ Embeddable panel of inputs for adding parameter selection to your app or visuali
 
 > Supports the following input types
 
-> `range` • `checkbox` • `text` • `color` • `button` • `interval` • `select`
+> `range` • `checkbox` • `text` • `color` • `button` • `interval` • `select` • `custom`
 
 ---
 
@@ -53,6 +53,7 @@ import ControlPanel, {
   Color,
   Range,
   Interval,
+  Custom,
 } from 'react-control-panel';
 
 const initialState = {
@@ -89,6 +90,11 @@ const DemoPanel = () => (
       label="multiple checkboxes"
       colors={['rgb(100,120,230)', 'rgb(210,100,190)']}
       names={['box1', 'box2']}
+    />
+    <Custom
+      Comp={({ value, onChange, theme }) => (
+        <MyCustomComponent value={value} onChange={onChange} theme={theme} />
+      )}
     />
   </ControlPanel>
 );
@@ -153,6 +159,7 @@ Some setting components have additional properties:
 - Inputs of type `interval` obey the same semantics as `range` inputs, except the input and output is a two-element array corresponding to the low/high bounds, e.g. `initial: [1, 7.5]`.
 - Inputs of type `select` can specify a list of options, either as an `Array` (in which case the value is the same as the option text) or as an object containing key/value pairs (in which case the key/value pair maps to value value/label pairs).
 - Inputs of type `multibox` can specify a number of checkboxes, either by providing a `count` or a list of `names` from which the number will be inferred, in which case the color of each box and a text name can also be provided as lists `colors` and `names`
+- Inputs of type `custom` can specify a custom component to be rendered in place of the input. The custom component will be supplied `value`, `onChange`, and `theme` props from the control panel. An additional `renderContainer` prop can be used to disable rendering a `Container` around the custom `Comp` if it is set to `false`.
 
 ### external state
 

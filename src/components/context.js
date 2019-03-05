@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 
 const ControlPanelContext = React.createContext({});
 export default ControlPanelContext;
@@ -57,10 +57,15 @@ export const withSettingState = mapPropsToStyles => Comp => ({ label, ...props }
         compProps.styles = mapPropsToStyles(compProps);
       }
 
+      const Wrapper =
+        props.renderContainer === false
+          ? Fragment
+          : ({ children }) => <Container label={label}>{children}</Container>;
+
       return (
-        <Container label={label}>
+        <Wrapper>
           <Comp {...compProps} />
-        </Container>
+        </Wrapper>
       );
     }}
   </ControlPanelContext.Consumer>
