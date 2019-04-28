@@ -87,7 +87,13 @@ class App extends React.Component {
         title="Example Panel 1"
         style={{ marginRight: 11, display: 'inline-block' }}
       />
-      <DemoPanel theme="dark" title="Example Panel 2" style={{ display: 'inline-block' }} />
+      <DemoPanel
+        theme="dark"
+        title="Example Panel 2"
+        style={{ display: 'inline-block' }}
+        position={{ top: 50, right: 500 }}
+        draggable
+      />
       <DemoPanel
         theme="dark"
         title="Example Panel 3"
@@ -121,7 +127,8 @@ class App extends React.Component {
         state={this.state}
         onChange={(key, val) => console.log(this.state, key, val) || this.setState({ [key]: val })}
         position="bottom-left"
-        style={{ display: 'inline-block', left: 8 }}
+        style={{ display: 'inline-block' }}
+        draggable
       >
         <Text label="text" />
       </ControlPanel>

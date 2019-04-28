@@ -45,13 +45,32 @@ const settingTypeMapping = {
 
 const VALID_POSITIONS = ['top-right', 'top-left', 'bottom-right', 'bottom-left'];
 
+/**
+ *
+ * @param {string | { left?: number, right?: number, bottom?: number, top?: number }} position
+ */
+const parsePositionPropToOffsets = position => {
+  if (typeof position === 'object') {
+    return position;
+  }
+
+  if (!position) {
+    return {};
+  }
+
+  return {
+    ...(position.includes('top') ? { top: 8 } : {}),
+    ...(position.includes('left') ? { left: 8 } : {}),
+    ...(position.includes('right') ? { right: 8 } : {}),
+    ...(position.includes('bottom') ? { bottom: 8 } : {}),
+  };
+};
+
 class ControlPanel extends React.Component {
   constructor(props) {
     super(props);
-    const position = {
-      ...(['top-right', 'bottom-right'].includes(props.position) ? { right: 8 } : { bottom: 8 }),
-      ...(['top-right', 'top-left'].includes(props.position) ? { top: 8 } : { bottom: 8 }),
-    };
+
+    const position = parsePositionPropToOffsets(props.position);
     this.state = { data: props.initialState || props.state || {}, position };
     this.derivedSettings = [];
 
@@ -128,7 +147,12 @@ class ControlPanel extends React.Component {
       const diffX = evt.pageX - this.state.mouseDownCoords.x;
       const diffY = evt.pageY - this.state.mouseDownCoords.y;
 
-      const newPosition = { ...this.state.position, right: this.state.mouseDownPos.right - diffX };
+      const position = (typeof this.props.position === 'string' ? this.props.position : '') || '';
+      const offset = position.includes('left')
+        ? { left: this.state.mouseDownPos.left + diffX }
+        : { right: this.state.mouseDownPos.right - diffX };
+
+      const newPosition = { ...this.state.position, ...offset };
       if (this.state.mouseDownPos.top !== undefined) {
         newPosition.top = this.state.mouseDownPos.top + diffY;
       } else if (this.state.mouseDownPos.bottom !== undefined) {
@@ -140,7 +164,7 @@ class ControlPanel extends React.Component {
   };
 
   render() {
-    const { width, theme: suppliedTheme, position, title, children, style } = this.props;
+    const { width, theme: suppliedTheme, position = '', title, children, style } = this.props;
 
     const theme = isstring(suppliedTheme) ? themes[suppliedTheme] || themes['dark'] : suppliedTheme;
     const state = this.getState();
@@ -151,7 +175,8 @@ class ControlPanel extends React.Component {
       padding: 14,
       paddingBottom: 8,
       opacity: 0.95,
-      position: VALID_POSITIONS.includes(position) ? 'absolute' : undefined,
+      position:
+        VALID_POSITIONS.includes(position) || typeof position !== 'string' ? 'absolute' : undefined,
       ...(this.state.position || {}),
       cursor: this.props.draggable ? 'move' : undefined,
       ...style,
@@ -193,7 +218,7 @@ ControlPanel.propTypes = {
   theme: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
   title: PropTypes.string,
   width: PropTypes.number,
-  position: PropTypes.oneOf(VALID_POSITIONS),
+  position: PropTypes.oneOfType([PropTypes.oneOf(VALID_POSITIONS), PropTypes.string]),
   style: PropTypes.object,
   settings: PropTypes.arrayOf(PropTypes.object),
   state: PropTypes.object,

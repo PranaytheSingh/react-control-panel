@@ -142,7 +142,7 @@ The `ControlPanel` component takes an array of children setting components that 
 - `theme` can specify `light` • `dark` or provide an object (see [`themes.js`](themes.js) for format)
 - `title` a title to add to the top of the panel
 - `width` width of panel in pixels
-- `position` where to place the panel as `top-left` • `top-right` • `bottom-left` • `bottom-right`, if `undefined` will just use relative positioning
+- `position` where to place the panel as `top-left` • `top-right` • `bottom-left` • `bottom-right`, if `undefined` will just use relative positioning. An object containing absolute positioning in terms of offsets from the sides of the page can also supplied like `{ left: 8, top: 0 }` or `{ right: 200 }`.
 - `draggable` makes the entire control panel draggable.
 - `style` is an object of inline styles that will be merged into the default styles of the panel's main component.
 - `settings` is an array of setting definitions in the same format as the orignal library; this can be used as an alternative to passing in setting components as children. See the `classic setting definitions` section above for an example.
