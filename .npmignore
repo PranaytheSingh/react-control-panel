@@ -4,3 +4,8 @@ images
 .babelrc
 .eslintrc
 webpack.*
+yarn.lock
+yarn-error.log
+node_modules
+webpack.config.js
+webpack.prod.js

@@ -1,6 +1,6 @@
 {
   "name": "react-control-panel",
-  "version": "0.4.6",
+  "version": "0.4.7",
   "description": "react-compatible, embeddable panel of inputs for parameter settings",
   "main": "dist/index.js",
   "module": "./lib/index.js",
@@ -32,34 +32,34 @@
   },
   "homepage": "https://github.com/ameobea/react-control-panel#readme",
   "dependencies": {
-    "is-numeric": "0.0.5",
+    "is-numeric": "0.0.9",
     "is-string": "^1.0.4",
-    "prop-types": "^15.6.2",
+    "prop-types": "^15.7.2",
     "react-css-component": "^1.0.2",
     "simple-color-picker": "^0.1.2",
-    "uuid": "^3.3.2"
+    "uuid": "^3.3.3"
   },
   "peerDependencies": {
-    "react": "16.8.2",
-    "react-dom": "16.8.2"
+    "react": "16.9.0",
+    "react-dom": "16.9.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.1.0",
-    "@babel/plugin-proposal-class-properties": "^7.1.0",
-    "@babel/preset-env": "^7.1.0",
+    "@babel/core": "^7.5.5",
+    "@babel/plugin-proposal-class-properties": "^7.5.5",
+    "@babel/preset-env": "^7.5.5",
     "@babel/preset-react": "^7.0.0",
-    "babel-eslint": "^9.0.0",
-    "babel-loader": "^8.0.2",
-    "css-loader": "^1.0.0",
-    "eslint": "^5.6.1",
-    "eslint-plugin-babel": "^5.2.1",
-    "eslint-plugin-react": "^7.11.1",
-    "react": "16.8.2",
-    "react-dom": "16.8.2",
-    "standard": "^7.1.0",
-    "style-loader": "^0.23.0",
-    "webpack": "^4.20.2",
-    "webpack-cli": "^3.1.1",
-    "webpack-dev-server": "^3.1.9"
+    "babel-eslint": "^10.0.3",
+    "babel-loader": "^8.0.6",
+    "css-loader": "^3.2.0",
+    "eslint": "^6.3.0",
+    "eslint-plugin-babel": "^5.3.0",
+    "eslint-plugin-react": "^7.14.3",
+    "react": "16.9.0",
+    "react-dom": "16.9.0",
+    "standard": "^14.1.0",
+    "style-loader": "^1.0.0",
+    "webpack": "^4.39.3",
+    "webpack-cli": "^3.3.7",
+    "webpack-dev-server": "^3.8.0"
   }
 }
