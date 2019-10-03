@@ -86,15 +86,9 @@ const DemoPanel = () => (
     <Color label="color hex" format="hex" />
     <Button label="gimme an alert" action={() => alert('clicked')} />
     <Select label="selection" options={{ 'option 1': 1, 'option 2': 2 }} />
-    <Multibox
-      label="multiple checkboxes"
-      colors={['rgb(100,120,230)', 'rgb(210,100,190)']}
-      names={['box1', 'box2']}
-    />
+    <Multibox label="multiple checkboxes" colors={['rgb(100,120,230)', 'rgb(210,100,190)']} names={['box1', 'box2']} />
     <Custom
-      Comp={({ value, onChange, theme }) => (
-        <MyCustomComponent value={value} onChange={onChange} theme={theme} />
-      )}
+      Comp={({ value, onChange, theme }) => <MyCustomComponent value={value} onChange={onChange} theme={theme} />}
     />
   </ControlPanel>
 );
@@ -121,6 +115,8 @@ It's also possible to use the old array-based definition system from the origina
       action: () => {
         alert('hello!');
       },
+      onmousedown: () => console.log('button pressed'),
+      onmouseup: () => console.log('button released'),
     },
     {
       type: 'select',
@@ -155,7 +151,7 @@ Some setting components have additional properties:
 
 - Inputs of type `range` can specify a `min`, `max`, and `step` (or integer `steps`). Scale can be either `'linear'` (default) or `'log'`. If a log scale, the sign of `min`, `max`, and `initial` must be the same and only `steps` is permitted (since the step size is not constant on a log scale).
 - Inputs of type `color` can specify a `format` as either `rgb` • `hex` • `array`
-- Inputs of type `button` can specify an `action` callback. Button inputs are not reflected in the state and do not trigger an `'input'` event.
+- Inputs of type `button` can specify `action` (onclick), `onmousedown`, and `onmouseup` callbacks. Button inputs are not reflected in the state and do not trigger an `'input'` event.
 - Inputs of type `interval` obey the same semantics as `range` inputs, except the input and output is a two-element array corresponding to the low/high bounds, e.g. `initial: [1, 7.5]`.
 - Inputs of type `select` can specify a list of options, either as an `Array` (in which case the value is the same as the option text) or as an object containing key/value pairs (in which case the key/value pair maps to value value/label pairs).
 - Inputs of type `multibox` can specify a number of checkboxes, either by providing a `count` or a list of `names` from which the number will be inferred, in which case the color of each box and a text name can also be provided as lists `colors` and `names`

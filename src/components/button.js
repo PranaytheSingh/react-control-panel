@@ -43,8 +43,18 @@ class UnwrappedButton extends React.Component {
         onBlur={() => this.setState({ focus: false })}
         onMouseEnter={() => this.setState({ hover: true })}
         onMouseLeave={() => this.setState({ hover: false })}
-        onMouseDown={() => this.setState({ active: true })}
-        onMouseUp={() => this.setState({ active: false })}
+        onMouseDown={() => {
+          this.setState({ active: true });
+          if (this.props.onmousedown) {
+            this.props.onmousedown();
+          }
+        }}
+        onMouseUp={() => {
+          this.setState({ active: false });
+          if (this.props.onmouseup) {
+            this.props.onmouseup();
+          }
+        }}
       >
         {this.props.label}
       </button>
@@ -54,7 +64,9 @@ class UnwrappedButton extends React.Component {
 
 const Button = withTheme(UnwrappedButton);
 Button.propTypes = {
-  action: PropTypes.func.isRequired,
+  action: PropTypes.func,
+  onmousedown: PropTypes.func,
+  onmouseup: PropTypes.func,
   label: PropTypes.string.isRequired,
 };
 
