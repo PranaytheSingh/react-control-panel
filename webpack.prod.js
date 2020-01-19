@@ -28,5 +28,8 @@ module.exports = {
     path: path.resolve(__dirname),
   },
   mode: 'production',
+  optimization: {
+		minimize: false
+	},
   devtool: 'source-map',
 };

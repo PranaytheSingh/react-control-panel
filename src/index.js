@@ -78,7 +78,18 @@ class ControlPanel extends React.Component {
       return;
     }
 
-    const { derivedInitialState, derivedSettings } = this.props.settings.reduce(
+    const { derivedInitialState } = this.computeDerivedSettings(this.props.settings);
+    this.state.data = { ...this.state.data, ...derivedInitialState };
+  }
+
+  lastSettings = null;
+  computeDerivedSettings(settings = []) {
+    if (this.lastSettings === settings) {
+      return { derivedSettings: this.derivedSettings };
+    }
+    this.lastSettings = settings;
+
+    const { derivedSettings, derivedInitialState } = settings.reduce(
       ({ derivedInitialState, derivedSettings }, { type, label, initial, ...props }) => {
         const SettingComponent = settingTypeMapping[type];
 
@@ -92,9 +103,8 @@ class ControlPanel extends React.Component {
       },
       { derivedInitialState: {}, derivedSettings: [] }
     );
-
-    this.state.data = { ...this.state.data, ...derivedInitialState };
     this.derivedSettings = derivedSettings;
+    return { derivedSettings, derivedInitialState };
   }
 
   componentDidMount() {
@@ -164,7 +174,15 @@ class ControlPanel extends React.Component {
   };
 
   render() {
-    const { width, theme: suppliedTheme, position = '', title, children, style } = this.props;
+    const {
+      width,
+      theme: suppliedTheme,
+      position = '',
+      title,
+      children,
+      style,
+      settings,
+    } = this.props;
 
     const theme = isstring(suppliedTheme) ? themes[suppliedTheme] || themes['dark'] : suppliedTheme;
     const state = this.getState();
@@ -182,6 +200,8 @@ class ControlPanel extends React.Component {
       ...style,
     };
 
+    const { derivedSettings } = this.computeDerivedSettings(settings);
+
     return (
       <div
         className="control-panel draggable"
@@ -197,7 +217,7 @@ class ControlPanel extends React.Component {
         >
           {title ? <Title title={title} /> : null}
           {children}
-          {this.derivedSettings.map(({ SettingComponent, label, props }) => (
+          {derivedSettings.map(({ SettingComponent, label, props }) => (
             <SettingComponent
               key={label}
               label={label}
