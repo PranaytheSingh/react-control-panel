@@ -169,6 +169,10 @@ class ControlPanel extends React.Component {
         newPosition.bottom = this.state.mouseDownPos.bottom - diffY;
       }
 
+      if (this.props.onDrag) {
+        this.props.onDrag(newPosition);
+      }
+
       this.setState({ position: newPosition });
     }
   };
@@ -244,6 +248,7 @@ ControlPanel.propTypes = {
   state: PropTypes.object,
   contextCb: PropTypes.func,
   draggable: PropTypes.bool,
+  onDrag: PropTypes.func,
 };
 
 ControlPanel.defaultProps = {
