@@ -158,7 +158,7 @@ class ControlPanel extends React.Component {
       const diffY = evt.pageY - this.state.mouseDownCoords.y;
 
       const position = (typeof this.props.position === 'string' ? this.props.position : '') || '';
-      const offset = position.includes('left')
+      const offset = !position || position.includes('left')
         ? { left: this.state.mouseDownPos.left + diffX }
         : { right: this.state.mouseDownPos.right - diffX };
 
