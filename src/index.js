@@ -49,7 +49,7 @@ const VALID_POSITIONS = ['top-right', 'top-left', 'bottom-right', 'bottom-left']
  *
  * @param {string | { left?: number, right?: number, bottom?: number, top?: number }} position
  */
-const parsePositionPropToOffsets = position => {
+const parsePositionPropToOffsets = (position) => {
   if (typeof position === 'object') {
     return position;
   }
@@ -80,6 +80,7 @@ class ControlPanel extends React.Component {
 
     const { derivedInitialState } = this.computeDerivedSettings(this.props.settings);
     this.state.data = { ...this.state.data, ...derivedInitialState };
+    console.log(this.state);
   }
 
   lastSettings = null;
@@ -126,7 +127,7 @@ class ControlPanel extends React.Component {
       set: (state, prop, val) => this.setState({ data: { ...this.state.data, [prop]: val } }),
     };
 
-    const setData = data => this.setState({ data: { ...this.state.data, ...data } });
+    const setData = (data) => this.setState({ data: { ...this.state.data, ...data } });
     this.props.contextCb(createPolyProxy(this.state.data, handler, setData));
   }
 
@@ -142,7 +143,7 @@ class ControlPanel extends React.Component {
     }
   }
 
-  handleMouseDown = evt => {
+  handleMouseDown = (evt) => {
     if ((evt.target.className || '').includes('draggable')) {
       this.setState({
         dragging: true,
@@ -152,15 +153,19 @@ class ControlPanel extends React.Component {
     }
   };
 
-  handleMouseDrag = evt => {
+  handleMouseDrag = (evt) => {
     if (this.state.dragging) {
       const diffX = evt.pageX - this.state.mouseDownCoords.x;
       const diffY = evt.pageY - this.state.mouseDownCoords.y;
 
-      const position = (typeof this.props.position === 'string' ? this.props.position : '') || '';
-      const offset = !position || position.includes('left')
-        ? { left: this.state.mouseDownPos.left + diffX }
-        : { right: this.state.mouseDownPos.right - diffX };
+      const position =
+        (!this.props.position || typeof this.props.position === 'string'
+          ? this.props.position
+          : Object.keys(this.props.position).join('_')) || '';
+      const offset =
+        !position || position.includes('left')
+          ? { left: this.state.mouseDownPos.left + diffX }
+          : { right: this.state.mouseDownPos.right - diffX };
 
       const newPosition = { ...this.state.position, ...offset };
       if (this.state.mouseDownPos.top !== undefined) {
@@ -227,7 +232,9 @@ class ControlPanel extends React.Component {
               label={label}
               {...props}
               value={state[label]}
-              onChange={newVal => this.setState({ data: { ...this.state.data, [label]: newVal } })}
+              onChange={(newVal) =>
+                this.setState({ data: { ...this.state.data, [label]: newVal } })
+              }
             />
           ))}
         </ControlPanelContext.Provider>
@@ -242,7 +249,11 @@ ControlPanel.propTypes = {
   theme: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
   title: PropTypes.string,
   width: PropTypes.number,
-  position: PropTypes.oneOfType([PropTypes.oneOf(VALID_POSITIONS), PropTypes.string]),
+  position: PropTypes.oneOfType([
+    PropTypes.oneOf(VALID_POSITIONS),
+    PropTypes.string,
+    PropTypes.object,
+  ]),
   style: PropTypes.object,
   settings: PropTypes.arrayOf(PropTypes.object),
   state: PropTypes.object,

@@ -91,7 +91,7 @@ class App extends React.Component {
         theme="dark"
         title="Example Panel 2"
         style={{ display: 'inline-block' }}
-        position={{ top: 50, left: 500 }}
+        position={{ top: 0, right: 20 }}
         draggable
       />
       <DemoPanel
