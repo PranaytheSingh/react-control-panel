@@ -80,7 +80,6 @@ class ControlPanel extends React.Component {
 
     const { derivedInitialState } = this.computeDerivedSettings(this.props.settings);
     this.state.data = { ...this.state.data, ...derivedInitialState };
-    console.log(this.state);
   }
 
   lastSettings = null;
