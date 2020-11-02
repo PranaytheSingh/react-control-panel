@@ -28,7 +28,7 @@ const CustomInput = ({ value, onChange, theme }) => (
           marginLeft: 6,
         }}
         value={value}
-        onChange={evt => onChange(evt.target.value)}
+        onChange={(evt) => onChange(evt.target.value)}
       />
     </div>
   </div>
@@ -70,6 +70,7 @@ const DemoPanel = ({ theme, title, ...props }) => (
           label="multiple checkboxes"
           colors={['rgb(100,120,230)', 'rgb(210,100,190)']}
           names={['box1', 'box2']}
+          LabelComponent={({ label }) => <span style={{ color: 'red' }}>{label}</span>}
         />
         <Custom label="custom component" renderContainer={false} Comp={CustomInput} />
       </React.Fragment>

@@ -86,9 +86,15 @@ const DemoPanel = () => (
     <Color label="color hex" format="hex" />
     <Button label="gimme an alert" action={() => alert('clicked')} />
     <Select label="selection" options={{ 'option 1': 1, 'option 2': 2 }} />
-    <Multibox label="multiple checkboxes" colors={['rgb(100,120,230)', 'rgb(210,100,190)']} names={['box1', 'box2']} />
+    <Multibox
+      label="multiple checkboxes"
+      colors={['rgb(100,120,230)', 'rgb(210,100,190)']}
+      names={['box1', 'box2']}
+    />
     <Custom
-      Comp={({ value, onChange, theme }) => <MyCustomComponent value={value} onChange={onChange} theme={theme} />}
+      Comp={({ value, onChange, theme }) => (
+        <MyCustomComponent value={value} onChange={onChange} theme={theme} />
+      )}
     />
   </ControlPanel>
 );
@@ -156,6 +162,7 @@ Some setting components have additional properties:
 - Inputs of type `select` can specify a list of options, either as an `Array` (in which case the value is the same as the option text) or as an object containing key/value pairs (in which case the key/value pair maps to value value/label pairs).
 - Inputs of type `multibox` can specify a number of checkboxes, either by providing a `count` or a list of `names` from which the number will be inferred, in which case the color of each box and a text name can also be provided as lists `colors` and `names`
 - Inputs of type `custom` can specify a custom component to be rendered in place of the input. The custom component will be supplied `value`, `onChange`, and `theme` props from the control panel. An additional `renderContainer` prop can be used to disable rendering a `Container` around the custom `Comp` if it is set to `false`.
+- Inputs of all types can take an optional `LabelComponent` prop to be used as a wrapper component when rendering the label. If provided, it should be a React component that takes a single prop `label` and renders it with any custom styling desired.
 
 ### external state
 
@@ -194,7 +201,7 @@ Please note that panel context will not work if you use external state.
 As mentioned above, it's possible to pass a callback to the `ControlPanel` component which will be supplied with a special context object after the component has mounted. This allows the underlying state to be directly viewed and manipulated from other parts of the application while still being reflected dynamically in the UI. Here's an example:
 
 ```javascript
-const handleContext = ctx => {
+const handleContext = (ctx) => {
   console.log(ctx['label']); // prints the stored value for that setting
   ctx['my range'] = 10; // this sets the value of the 'my range' setting to 10 in the panel
   ctx['multibox'][1] = false; // this doesn't work; you can only set top-level setting values

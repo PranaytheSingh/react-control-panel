@@ -3,13 +3,13 @@ import React, { Fragment, useMemo } from 'react';
 const ControlPanelContext = React.createContext({});
 export default ControlPanelContext;
 
-export const withTheme = Comp => ({ ...props }) => (
+export const withTheme = (Comp) => ({ ...props }) => (
   <ControlPanelContext.Consumer>
     {({ theme }) => <Comp theme={theme} {...props} />}
   </ControlPanelContext.Consumer>
 );
 
-const getLabelStyles = theme => ({
+const getLabelStyles = (theme) => ({
   body: {
     left: 0,
     width: '36%',
@@ -37,24 +37,34 @@ export const Label = withTheme(({ label, theme }) => {
   );
 });
 
-export const Container = ({ label, children }) => (
+export const Container = ({ label, LabelComponent, children }) => (
   <div className="container draggable">
-    <Label label={label || ''} />
+    <Label label={LabelComponent ? <LabelComponent label={label} /> : label || ''} />
     {children}
   </div>
 );
 
-const WithSettingStateWrapper = React.memo(({ renderContainer, label, children }) =>
-  renderContainer ? <Container label={label}>{children}</Container> : children
+const WithSettingStateWrapper = React.memo(({ renderContainer, label, LabelComponent, children }) =>
+  renderContainer ? (
+    <Container LabelComponent={LabelComponent} label={label}>
+      {children}
+    </Container>
+  ) : (
+    children
+  )
 );
 
-export const withSettingState = mapPropsToStyles => Comp => ({ label, ...props }) => (
+export const withSettingState = (mapPropsToStyles) => (Comp) => ({
+  label,
+  LabelComponent,
+  ...props
+}) => (
   <ControlPanelContext.Consumer>
     {({ state, setState, theme, indicateChange }) => {
       const compProps = {
         ...props,
         value: state[label],
-        onChange: newVal => indicateChange(label, newVal),
+        onChange: (newVal) => indicateChange(label, newVal),
         theme,
       };
       if (mapPropsToStyles) {
@@ -64,6 +74,7 @@ export const withSettingState = mapPropsToStyles => Comp => ({ label, ...props }
       return (
         <WithSettingStateWrapper
           label={label}
+          LabelComponent={LabelComponent}
           renderContainer={props.renderContainer === false ? false : true}
         >
           <Comp {...compProps} />
