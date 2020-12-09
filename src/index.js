@@ -121,9 +121,37 @@ class ControlPanel extends React.Component {
       return;
     }
 
+    this.pendingProxySetValues = new Map();
+    this.proxyIsSetting = false;
+
+    // `setState` is async, and if we set multiple values while the previous `setState` is
+    // happening we can get stale values merged into the state.
+    //
+    // This prevents that by holding values while `setState` is running until it finishes and then
+    // setting them all at once when it does.
+    const setStateCb = () => {
+      if (this.pendingProxySetValues.size === 0) {
+        this.proxyIsSetting = false;
+        return;
+      }
+
+      const toMerge = Object.fromEntries([...this.pendingProxySetValues.entries()]);
+      this.pendingProxySetValues.clear();
+      this.setState({ data: { ...this.state.data, ...toMerge } }, setStateCb);
+    };
+
     const handler = {
-      get: (state, prop) => this.state.data[prop],
-      set: (state, prop, val) => this.setState({ data: { ...this.state.data, [prop]: val } }),
+      get: (_state, prop) => this.state.data[prop],
+      set: (_state, prop, val) => {
+        if (this.proxyIsSetting) {
+          this.pendingProxySetValues.set(prop, val);
+          return true;
+        }
+        this.proxyIsSetting = true;
+
+        this.setState({ data: { ...this.state.data, [prop]: val } }, setStateCb);
+        return true;
+      },
     };
 
     const setData = (data) => this.setState({ data: { ...this.state.data, ...data } });
