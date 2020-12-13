@@ -218,6 +218,7 @@ class ControlPanel extends React.Component {
       children,
       style,
       settings,
+      className,
     } = this.props;
 
     const theme = isstring(suppliedTheme) ? themes[suppliedTheme] || themes['dark'] : suppliedTheme;
@@ -240,7 +241,7 @@ class ControlPanel extends React.Component {
 
     return (
       <div
-        className="control-panel draggable"
+        className={`control-panel draggable${className ? ' ' + className : ''}`}
         onMouseDown={this.props.draggable ? this.handleMouseDown : undefined}
         style={combinedStyle}
       >
@@ -287,6 +288,7 @@ ControlPanel.propTypes = {
   contextCb: PropTypes.func,
   draggable: PropTypes.bool,
   onDrag: PropTypes.func,
+  className: PropTypes.string,
 };
 
 ControlPanel.defaultProps = {
@@ -294,6 +296,7 @@ ControlPanel.defaultProps = {
   theme: 'dark',
   onChange: () => {},
   style: {},
+  className: null,
 };
 
 export default ControlPanel;

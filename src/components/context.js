@@ -30,7 +30,7 @@ export const Label = withTheme(({ label, theme }) => {
 
   return (
     <div style={styles.body} className="draggable">
-      <span className="draggable" style={styles.text}>
+      <span title={label} className="draggable" style={styles.text}>
         {label}
       </span>
     </div>
