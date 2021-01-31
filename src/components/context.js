@@ -1,4 +1,4 @@
-import React, { Fragment, useMemo } from 'react';
+import React from 'react';
 
 const ControlPanelContext = React.createContext({});
 export default ControlPanelContext;
@@ -60,12 +60,12 @@ export const withSettingState = (mapPropsToStyles) => (Comp) => ({
   ...props
 }) => (
   <ControlPanelContext.Consumer>
-    {({ state, setState, theme, indicateChange }) => {
+    {({ state, theme, indicateChange }) => {
       const compProps = {
-        ...props,
         value: state[label],
         onChange: (newVal) => indicateChange(label, newVal),
         theme,
+        ...props,
       };
       if (mapPropsToStyles) {
         compProps.styles = mapPropsToStyles(compProps);

@@ -33,7 +33,7 @@ const getNormalDisplayOpts = createNormalDisplayOptsGetter((min, max, value) =>
   numericOrDefault(value, (min + max) / 2)
 );
 
-class Range extends React.Component {
+export class InnerRange extends React.Component {
   state = { id: uuid() };
 
   render() {
@@ -56,7 +56,7 @@ class Range extends React.Component {
           min={min}
           max={max}
           step={processedStep}
-          onChange={e => {
+          onChange={(e) => {
             // We take the value from the slider (range 1 to 100) and scale it into its logarithmic
             // representation before passing it into the state.
             onChange(scaleValue(parseFloat(e.target.value)));
@@ -68,4 +68,4 @@ class Range extends React.Component {
   }
 }
 
-export default withErrorHandler(withSettingState()(Range));
+export default withErrorHandler(withSettingState()(InnerRange));

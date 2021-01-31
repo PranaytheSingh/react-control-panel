@@ -25,6 +25,7 @@ export { default as Select } from './components/select';
 export { default as Text } from './components/text';
 export { default as Color } from './components/color';
 export { default as Range } from './components/range';
+export { InnerRange } from './components/range';
 export { default as Interval } from './components/interval';
 export { default as Custom } from './components/custom';
 export { default as themes } from './themes';
@@ -255,15 +256,7 @@ class ControlPanel extends React.Component {
           {title ? <Title title={title} /> : null}
           {children}
           {derivedSettings.map(({ SettingComponent, label, props }) => (
-            <SettingComponent
-              key={label}
-              label={label}
-              {...props}
-              value={state[label]}
-              onChange={(newVal) =>
-                this.setState({ data: { ...this.state.data, [label]: newVal } })
-              }
-            />
+            <SettingComponent key={label} label={label} {...props} value={state[label]} />
           ))}
         </ControlPanelContext.Provider>
       </div>
