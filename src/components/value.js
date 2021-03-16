@@ -2,7 +2,17 @@ import React from 'react';
 
 import { withTheme } from './context';
 
-const Value = ({ theme, text, width, left }) => {
+const Value = ({ theme, text, width, left, cb }) => {
+
+  const [v, setV] = React.useState(text)
+
+  const handleChange = (e) => {
+    // console.log(e.target.value)
+    setV(e.target.value);
+    cb(e.target.value)
+
+  }
+
   const styles = {
     body: {
       position: 'absolute',
@@ -21,15 +31,22 @@ const Value = ({ theme, text, width, left }) => {
       MozUserSelect: 'text',
       cursor: 'text',
       overflow: 'hidden',
-      lineHeight: '20px',
+      lineHeight: '30px',
       wordBreak: 'break-all',
       height: 20,
+      border:' 0px',
+      backgroundColor: theme.background2, 
     },
   };
 
+  React.useEffect(()=>{
+    // console.log('here')
+    setV(text)
+  },[text])
+
   return (
     <div style={styles.body}>
-      <span style={styles.text}>{text}</span>
+      <input style={styles.text} value={v} onChange={handleChange}/>
     </div>
   );
 };

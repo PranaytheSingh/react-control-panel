@@ -24,6 +24,13 @@ const colorFormatters = {
 class Color extends React.Component {
   colorpickerContainer = React.createRef();
   state = { colorHovered: false, pickerHovered: false };
+   
+
+  constructor (props){
+    super(props);
+    
+    this.pp = this.pp.bind(this);
+  }
 
   formatColor = color => colorFormatters[this.props.format](this.picker);
 
@@ -37,7 +44,9 @@ class Color extends React.Component {
     });
 
     this.picker.onChange(newColor => {
+      console.log(newColor)
       const formattedNewColor = this.formatColor(newColor);
+      console.log(formattedNewColor)
       if (formattedNewColor !== this.props.value) {
         this.props.onChange(formattedNewColor);
       }
@@ -45,9 +54,20 @@ class Color extends React.Component {
   }
 
   componentDidUpdate() {
+    console.log('adfa')
     if (this.picker) {
       this.picker.setColor(this.props.value);
     }
+  }
+
+  pp(v){
+    console.log(this)
+    console.log(v)
+    if (v){
+      console.log(v)
+      this.picker.setColor(v)
+    }
+  ;
   }
 
   getStyles = () => ({
@@ -90,7 +110,7 @@ class Color extends React.Component {
           onMouseEnter={() => this.setState({ pickerHovered: true })}
           onMouseLeave={() => this.setState({ pickerHovered: false })}
         />
-        <Value text={this.props.value} width="46%" />
+        <Value text={this.props.value} width="46%" cb={this.pp}/>
       </React.Fragment>
     );
   };

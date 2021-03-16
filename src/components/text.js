@@ -6,7 +6,7 @@ class Text extends React.Component {
   state = { focused: false };
 
   render = () => (
-    <input
+    <textarea
       style={{ ...this.props.styles.body, outline: this.state.focused ? 'none' : undefined }}
       onFocus={() => this.setState({ focused: true })}
       onBlur={() => this.setState({ focused: false })}
@@ -19,10 +19,10 @@ class Text extends React.Component {
 
 const mapPropsToStyles = ({ theme }) => ({
   body: {
-    position: 'absolute',
+    position: 'relative',
     paddingLeft: 6,
-    height: 20,
-    width: '59.5%',
+    height: '80px',
+    width: '95%',
     border: 'none',
     background: theme.background2,
     color: theme.text2,
